@@ -30,6 +30,7 @@ const MAX_FIELD_DEPTH = 6;
 const ARRAY_ITEMS_PER_VALUE = 20;
 const MAX_FIELDS = 500;
 const MAX_VISITS = 250_000;
+const GOLDEN_RATIO_FRACTION = 0.618_033_988_749_895;
 const TYPE_ORDER: readonly FieldType[] = ['string', 'number', 'boolean', 'null', 'object', 'array'];
 
 export function getFieldType(value: unknown): FieldType | undefined {
@@ -50,14 +51,21 @@ export function getFieldType(value: unknown): FieldType | undefined {
   }
 }
 
-/** Picks evenly spaced records so large collections are characterised end to end. */
+/**
+ * Takes one record from each equal slice of the collection so it is covered end to end.
+ * The position inside each slice varies (golden-ratio sequence) because a fixed stride
+ * aliases with periodic data and can skip every record that carries a given field.
+ */
 export function sampleRecords(
   records: readonly unknown[],
   size = SCHEMA_SAMPLE_SIZE,
 ): readonly unknown[] {
   if (records.length <= size) return records;
   const step = records.length / size;
-  return Array.from({ length: size }, (_, index) => records[Math.floor(index * step)]);
+  return Array.from({ length: size }, (_, index) => {
+    const offset = (index * GOLDEN_RATIO_FRACTION) % 1;
+    return records[Math.floor((index + offset) * step)];
+  });
 }
 
 export function inferSchema(records: readonly unknown[], sampleSize = SCHEMA_SAMPLE_SIZE): Schema {

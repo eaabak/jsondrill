@@ -73,4 +73,11 @@ describe('inferSchema', () => {
     expect(schema.recordCount).toBe(10_000);
     expect(byKey(schema.fields).has('late')).toBe(true);
   });
+
+  it('does not miss fields that appear periodically', () => {
+    const records = Array.from({ length: 20_000 }, (_, index) =>
+      index % 4 === 1 ? { id: index, rare: true } : { id: index },
+    );
+    expect(byKey(inferSchema(records).fields).has('rare')).toBe(true);
+  });
 });
