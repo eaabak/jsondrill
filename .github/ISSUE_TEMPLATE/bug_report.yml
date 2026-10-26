@@ -1,0 +1,46 @@
+name: Bug report
+description: Something in JSONDrill does not work as expected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Remove tokens, personal data and other sensitive values from anything you paste here.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open DevTools on ...
+        2. Select the request ...
+        3. Add the filter ...
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Minimal sample response
+      description: A small, anonymised JSON response that reproduces the problem.
+      render: json
+  - type: input
+    id: jsondrill-version
+    attributes:
+      label: JSONDrill version
+      placeholder: e.g. 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: chrome-version
+    attributes:
+      label: Chrome version
+      description: Found at chrome://version
+      placeholder: e.g. 141.0.7390.65
+    validations:
+      required: true

@@ -1,0 +1,156 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: light;
+  --jd-bg: #ffffff;
+  --jd-bg-alt: #f1f3f4;
+  --jd-bg-hover: #e8eaed;
+  --jd-bg-selected: #d2e3fc;
+  --jd-border: #d3d6da;
+  --jd-fg: #202124;
+  --jd-fg-muted: #5f6368;
+  --jd-accent: #1a73e8;
+  --jd-error: #c5221f;
+  --jd-warning: #8a4b00;
+  --jd-success: #137333;
+  --jd-syntax-key: #881391;
+  --jd-syntax-string: #c41a16;
+  --jd-syntax-number: #1c00cf;
+  --jd-syntax-keyword: #0d22aa;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --jd-bg: #202124;
+  --jd-bg-alt: #292a2d;
+  --jd-bg-hover: #35363a;
+  --jd-bg-selected: #23426b;
+  --jd-border: #3c4043;
+  --jd-fg: #e8eaed;
+  --jd-fg-muted: #9aa0a6;
+  --jd-accent: #8ab4f8;
+  --jd-error: #f28b82;
+  --jd-warning: #fdd663;
+  --jd-success: #81c995;
+  --jd-syntax-key: #d98ee6;
+  --jd-syntax-string: #f29766;
+  --jd-syntax-number: #a495ff;
+  --jd-syntax-keyword: #7cacf8;
+}
+
+@theme inline {
+  --color-surface: var(--jd-bg);
+  --color-surface-alt: var(--jd-bg-alt);
+  --color-hover: var(--jd-bg-hover);
+  --color-selected: var(--jd-bg-selected);
+  --color-line: var(--jd-border);
+  --color-fg: var(--jd-fg);
+  --color-muted: var(--jd-fg-muted);
+  --color-accent: var(--jd-accent);
+  --color-error: var(--jd-error);
+  --color-warning: var(--jd-warning);
+  --color-success: var(--jd-success);
+  --color-syntax-key: var(--jd-syntax-key);
+  --color-syntax-string: var(--jd-syntax-string);
+  --color-syntax-number: var(--jd-syntax-number);
+  --color-syntax-keyword: var(--jd-syntax-keyword);
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--jd-bg);
+    color: var(--jd-fg);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--jd-accent);
+    outline-offset: -1px;
+  }
+}
+
+@layer components {
+  .jd-input,
+  .jd-select {
+    height: 1.5rem;
+    min-width: 0;
+    padding: 0 0.375rem;
+    border: 1px solid var(--jd-border);
+    border-radius: 2px;
+    background: var(--jd-bg);
+    color: var(--jd-fg);
+    font: inherit;
+  }
+
+  .jd-input:focus-visible,
+  .jd-select:focus-visible {
+    border-color: var(--jd-accent);
+  }
+
+  .jd-input[aria-invalid='true'] {
+    border-color: var(--jd-error);
+  }
+
+  .jd-input:disabled,
+  .jd-select:disabled {
+    opacity: 0.6;
+  }
+
+  .jd-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    height: 1.5rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--jd-border);
+    border-radius: 2px;
+    background: var(--jd-bg);
+    color: var(--jd-fg);
+    white-space: nowrap;
+  }
+
+  .jd-button:hover:not(:disabled) {
+    background: var(--jd-bg-hover);
+  }
+
+  .jd-button[aria-pressed='true'] {
+    border-color: var(--jd-accent);
+    background: var(--jd-bg-selected);
+  }
+
+  .jd-button:disabled {
+    opacity: 0.5;
+  }
+
+  .jd-icon-button {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 2px;
+    color: var(--jd-fg-muted);
+  }
+
+  .jd-icon-button:hover:not(:disabled) {
+    background: var(--jd-bg-hover);
+    color: var(--jd-fg);
+  }
+
+  .jd-icon-button:disabled {
+    opacity: 0.5;
+  }
+}

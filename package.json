@@ -1,0 +1,63 @@
+{
+  "name": "jsondrill",
+  "version": "0.1.0",
+  "description": "Smart JSON filtering directly inside Chrome DevTools.",
+  "keywords": [
+    "chrome-extension",
+    "devtools",
+    "json",
+    "filter",
+    "search",
+    "api",
+    "network",
+    "debugging"
+  ],
+  "homepage": "https://github.com/eaabak/jsondrill#readme",
+  "bugs": {
+    "url": "https://github.com/eaabak/jsondrill/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eaabak/jsondrill.git"
+  },
+  "license": "MIT",
+  "author": "Erkin (https://github.com/eaabak)",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "package": "npm run build && node scripts/package-extension.mjs",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "lint": "oxlint --deny-warnings",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
+    "version": "node scripts/sync-version.mjs && git add public/manifest.json"
+  },
+  "dependencies": {
+    "@tanstack/react-virtual": "^3.14.23",
+    "lucide-react": "^1.61.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/chrome": "^0.3.6",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "oxlint": "^1.89.0",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}
