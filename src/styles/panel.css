@@ -17,6 +17,7 @@
   --jd-syntax-string: #c41a16;
   --jd-syntax-number: #1c00cf;
   --jd-syntax-keyword: #0d22aa;
+  --jd-select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' fill='none' stroke='%235f6368' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 :root[data-theme='dark'] {
@@ -36,6 +37,7 @@
   --jd-syntax-string: #f29766;
   --jd-syntax-number: #a495ff;
   --jd-syntax-keyword: #7cacf8;
+  --jd-select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' fill='none' stroke='%239aa0a6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 @theme inline {
@@ -92,6 +94,17 @@
     background: var(--jd-bg);
     color: var(--jd-fg);
     font: inherit;
+  }
+
+  /* The native arrow hugs the right border; a drawn one keeps consistent spacing in both themes. */
+  .jd-select {
+    appearance: none;
+    padding-right: 1.5rem;
+    background-image: var(--jd-select-arrow);
+    background-position: right 0.4375rem center;
+    background-repeat: no-repeat;
+    background-size: 0.625rem;
+    text-overflow: ellipsis;
   }
 
   .jd-input:focus-visible,
