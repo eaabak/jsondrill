@@ -12,6 +12,8 @@ JSONDrill adds a DevTools panel that lists the JSON responses captured by the Ne
 detects their structure and lets you search any field or filter records like a spreadsheet,
 without browsing thousands of nested objects or writing JSONPath.
 
+![JSONDrill searching and filtering a 20,000-record API response in Chrome DevTools](docs/demo.gif)
+
 ## Features
 
 - Request list with method, path and status, newest first, with text and JSON-only filters
