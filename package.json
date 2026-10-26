@@ -1,6 +1,6 @@
 {
   "name": "jsondrill",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Smart JSON filtering directly inside Chrome DevTools.",
   "keywords": [
     "chrome-extension",
