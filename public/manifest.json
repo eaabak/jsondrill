@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "JSONDrill",
   "short_name": "JSONDrill",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Smart JSON filtering directly inside Chrome DevTools.",
   "minimum_chrome_version": "120",
   "devtools_page": "devtools.html",
