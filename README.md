@@ -28,6 +28,7 @@ without browsing thousands of nested objects or writing JSONPath.
 - Virtualized table view and lazily expanded JSON tree for large responses
 - Copy or download the matching records as JSON
 - Light and dark themes following the DevTools setting
+- Toolbar popup with quick-start steps for new users
 
 ## Install
 

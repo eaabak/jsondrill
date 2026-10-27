@@ -7,6 +7,10 @@ describe('extension manifest', () => {
     expect(manifest.version).toBe(packageJson.version);
   });
 
+  it('shows the usage popup from the toolbar icon', () => {
+    expect(manifest.action.default_popup).toBe('popup.html');
+  });
+
   it('requests no permissions', () => {
     expect(manifest).not.toHaveProperty('permissions');
     expect(manifest).not.toHaveProperty('host_permissions');

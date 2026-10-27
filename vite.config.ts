@@ -18,6 +18,7 @@ export default defineConfig({
       input: {
         devtools: fromRoot('devtools.html'),
         panel: fromRoot('panel.html'),
+        popup: fromRoot('popup.html'),
       },
     },
   },

@@ -6,6 +6,11 @@ All notable changes to JSONDrill are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Toolbar popup with step-by-step usage instructions. The toolbar icon is now shown in colour
+  instead of greyed out.
+
 ## [0.1.2] - 2026-10-26
 
 ### Changed

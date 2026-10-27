@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSONDrill</title>
+  </head>
+  <body>
+    <header class="header">
+      <img src="/icons/icon-48.png" width="36" height="36" alt="" />
+      <div>
+        <h1>JSONDrill</h1>
+        <p class="muted">Find anything inside your JSON.</p>
+      </div>
+    </header>
+
+    <main>
+      <h2>How to use</h2>
+      <ol class="steps">
+        <li>Open DevTools with <kbd data-shortcut>F12</kbd>.</li>
+        <li>
+          Select the <strong>JSONDrill</strong> tab. If you don't see it, click <strong>»</strong>
+          in the DevTools tab bar.
+        </li>
+        <li>Reload the page so JSONDrill can capture its requests.</li>
+        <li>Pick a request, then search any field or add filters.</li>
+      </ol>
+      <p class="note">
+        JSONDrill runs entirely on your computer and only sees requests made while DevTools is open.
+      </p>
+    </main>
+
+    <footer class="footer">
+      <a href="https://github.com/eaabak/jsondrill#readme" target="_blank" rel="noreferrer">
+        Documentation
+      </a>
+      <a href="https://github.com/eaabak/jsondrill/issues" target="_blank" rel="noreferrer">
+        Report an issue
+      </a>
+      <span class="muted" data-version></span>
+    </footer>
+
+    <script type="module" src="/src/popup/main.ts"></script>
+  </body>
+</html>
