@@ -2,6 +2,7 @@
 
 # JSONDrill
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/injlohhmedliakccmmpbipbnjjmonkip?label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/jsondrill/injlohhmedliakccmmpbipbnjjmonkip)
 [![CI](https://github.com/eaabak/jsondrill/actions/workflows/ci.yml/badge.svg)](https://github.com/eaabak/jsondrill/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -28,7 +29,15 @@ without browsing thousands of nested objects or writing JSONPath.
 - Copy or download the matching records as JSON
 - Light and dark themes following the DevTools setting
 
-## Install from source
+## Install
+
+Install JSONDrill from the [Chrome Web Store](https://chromewebstore.google.com/detail/jsondrill/injlohhmedliakccmmpbipbnjjmonkip), then open
+DevTools on any page and select the **JSONDrill** panel.
+
+JSONDrill only sees requests that DevTools has recorded. If the list is empty, keep DevTools open
+and reload the page (the panel has a reload button).
+
+## Build from source
 
 Requires Node.js 22.12+ and Chrome 120+.
 
@@ -42,9 +51,6 @@ npm run build
 1. Open `chrome://extensions` and enable **Developer mode**.
 2. Click **Load unpacked** and select the `dist/` folder.
 3. Open DevTools on any page and select the **JSONDrill** panel.
-
-JSONDrill only sees requests that DevTools has recorded. If the list is empty, keep DevTools open
-and reload the page (the panel has a reload button).
 
 ## Search and filter semantics
 
