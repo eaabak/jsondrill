@@ -34,9 +34,13 @@ export function downloadText(fileName: string, text: string): void {
   setTimeout(() => URL.revokeObjectURL(url), OBJECT_URL_LIFETIME_MS);
 }
 
-export function getExportFileName(requestPath: string): string {
+export function getExportFileName(
+  requestPath: string,
+  source: 'response' | 'payload' = 'response',
+): string {
   const pathname = requestPath.split('?')[0] ?? '';
   const lastSegment = pathname.split('/').filter(Boolean).at(-1) ?? '';
   const base = lastSegment.replace(UNSAFE_FILE_NAME_CHARS, '-').replace(/^-+|-+$/g, '');
-  return `${base || 'response'}-filtered.json`;
+  const suffix = source === 'payload' ? '-payload' : '';
+  return `${base || source}${base ? suffix : ''}-filtered.json`;
 }

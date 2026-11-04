@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 26 October 2026_
+_Last updated: 4 November 2026_
 
 JSONDrill is a Chrome DevTools extension that helps developers inspect JSON responses. It is
 designed to work entirely on your computer.
@@ -8,8 +8,13 @@ designed to work entirely on your computer.
 ## What JSONDrill accesses
 
 While Chrome DevTools is open, JSONDrill reads the list of network requests that DevTools has
-recorded for the inspected page (method, URL, status, content type and size). It reads a
-response body only when you select that request in the JSONDrill panel.
+recorded for the inspected page: method, URL, status, content type, size, query parameters,
+request and response headers, and the request body (payload). It reads a response body only when
+you select that request in the JSONDrill panel.
+
+Headers, query parameters and form fields whose names look like credentials (for example
+`Authorization`, cookies, tokens, API keys and passwords) are masked in the panel until you
+choose to reveal them.
 
 ## How the data is used
 
@@ -22,7 +27,8 @@ navigates, or when DevTools is closed.
 - It does not send any data to the developer or to any third party.
 - It makes no network requests of its own and loads no remote code.
 - It contains no analytics, telemetry, advertising or tracking.
-- It does not store request or response data on disk.
+- It does not store request or response data on disk. The only thing it remembers is the size of
+  the request list, kept in the panel's local storage.
 - It requests no extension permissions.
 
 ## Copy and export

@@ -156,7 +156,7 @@ export function rankSearchFields(fields: readonly SchemaField[]): SchemaField[] 
     .map(({ field }) => field);
 }
 
-function idFieldScore(field: SchemaField): number {
+export function idFieldScore(field: SchemaField): number {
   const name = field.path.at(-1);
   if (typeof name !== 'string') return 0;
   const normalized = name.toLowerCase();

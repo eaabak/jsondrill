@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { EACH, filterRecords, inferSchema, parseJson, stringifyJson } from '../src/core';
+import {
+  diffCollections,
+  EACH,
+  filterRecords,
+  inferSchema,
+  parseJson,
+  stringifyJson,
+} from '../src/core';
 
 const RECORD_COUNT = 20_000;
 // Generous enough for slow CI machines while still catching accidental quadratic behaviour.
@@ -65,6 +72,20 @@ describe('performance sanity check', () => {
     expect(matches.length).toBe(
       records.filter((record) => record.email?.includes('user1999')).length,
     );
+    expect(elapsed).toBeLessThan(BUDGET_MS);
+  });
+
+  it('compares two versions of every record within budget', () => {
+    const before = createRecords();
+    const after = createRecords()
+      .toReversed()
+      .map((record) => (record.id % 7 === 0 ? { ...record, age: record.age + 1 } : record));
+    const started = performance.now();
+    const diff = diffCollections(before, after);
+    const elapsed = performance.now() - started;
+
+    expect(diff.match).toEqual({ kind: 'field', field: 'id' });
+    expect(diff.counts.changed).toBe(Math.floor(RECORD_COUNT / 7));
     expect(elapsed).toBeLessThan(BUDGET_MS);
   });
 });

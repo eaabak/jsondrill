@@ -18,6 +18,12 @@ without browsing thousands of nested objects or writing JSONPath.
 ## Features
 
 - Request list with method, path and status, newest first, with text and JSON-only filters
+- **Compare** any response with the previous call to the same endpoint (or any other response):
+  removed, added and retyped fields, plus added, removed and changed records paired by `id`,
+  shown as a colored line-by-line diff in unified or split view
+- **Response, Payload and Headers** tabs: JSON request bodies get the same search and filters as
+  responses, form data and query parameters are shown as tables, and credential-like values
+  (`Authorization`, cookies, tokens, passwords) stay masked until you reveal them
 - Automatic collection discovery (`data.items`, root arrays, nested wrappers) with a picker
 - Schema detection from a bounded sample: types, nullable fields, missing properties, nested
   objects and arrays
@@ -78,8 +84,10 @@ npm run build
 ## Privacy
 
 JSONDrill runs entirely locally. It requests no extension permissions, makes no network
-requests, collects no analytics and stores nothing on disk. Response bodies are read on demand
-through the DevTools API and kept in memory only while a request is selected. See the full
+requests, collects no analytics and stores no request or response data on disk (it only remembers
+the size of the request list). Request details come from the
+DevTools network log and stay in memory; response bodies are read on demand through the DevTools
+API only while a request is selected. See the full
 [privacy policy](PRIVACY.md).
 
 ## Development

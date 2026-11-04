@@ -39,6 +39,18 @@ export function previewContainer(value: unknown): string {
   return `{${entries.join(', ')}}`;
 }
 
+const TIME_FORMAT = new Intl.DateTimeFormat('en-GB', {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  fractionalSecondDigits: 3,
+  hour12: false,
+});
+
+export function formatTime(timestamp: number): string {
+  return TIME_FORMAT.format(timestamp);
+}
+
 export function getErrorMessage(error: unknown, fallback: string): string {
   return error instanceof Error && error.message !== '' ? error.message : fallback;
 }

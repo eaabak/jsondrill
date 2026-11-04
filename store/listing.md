@@ -33,6 +33,12 @@ JSONDrill detects the structure of the selected response automatically: field ty
 BUILT FOR LARGE RESPONSES
 A virtualized table and a lazily expanded JSON tree stay responsive with tens of thousands of records. When a response contains several arrays, choose which collection to explore.
 
+COMPARE RESPONSES
+See what changed between two calls to the same endpoint in one click. JSONDrill lists structure changes first (removed fields, new fields, a number that became a string, a field that became nullable), then the added, removed and changed records, paired by their id. Each changed record is shown as a colored line-by-line diff, in unified or side-by-side view. Narrow the list to a single change type or field, such as only the records whose status changed.
+
+PAYLOAD AND HEADERS
+Switch between the Response, Payload and Headers tabs of any request. JSON request bodies get the same search, filters and table as responses, so even a bulk POST with hundreds of items is easy to inspect. Form data and query parameters are shown as tables. Authorization headers, cookies, tokens and passwords stay masked until you reveal them.
+
 COPY AND EXPORT
 Copy the matching records as JSON or download them as a file.
 
@@ -77,8 +83,9 @@ permissions; the DevTools APIs it uses are available to every `devtools_page`.
 
 **Remote code:** No, I am not using remote code. All scripts are bundled in the package.
 
-**Data usage:** leave every data category unchecked. Response data is read through the DevTools
-API, processed in memory on the user's device and never transmitted, sold or stored.
+**Data usage:** leave every data category unchecked. Request and response data (including
+headers and request bodies) is read through the DevTools API, processed in memory on the user's
+device and never transmitted, sold or stored.
 
 Certify all three statements:
 

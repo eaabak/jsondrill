@@ -49,6 +49,16 @@ export function findCollections(root: unknown): [Collection, ...Collection[]] {
   return [best, ...remaining, rootObject, ...others];
 }
 
+export function findSharedCollections(
+  before: unknown,
+  after: unknown,
+): [Collection, ...Collection[]] {
+  const [first, ...rest] = findCollections(after).filter(
+    (collection) => resolvePath(before, collection.path).values.length > 0,
+  );
+  return first ? [first, ...rest] : [{ key: '', path: [], label: '(root)', size: 1 }];
+}
+
 export function getCollectionRecords(root: unknown, path: readonly string[]): readonly unknown[] {
   const value = resolvePath(root, path).values[0];
   return Array.isArray(value) ? value : [value];

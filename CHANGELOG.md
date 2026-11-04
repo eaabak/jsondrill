@@ -6,6 +6,25 @@ All notable changes to JSONDrill are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Compare tab: shows what changed between two responses, by default the previous call to the same
+  endpoint. Structure changes (removed, added and retyped fields, fields that became nullable) are
+  listed first, then added, removed and changed records, paired by their `id`-like field or by
+  position. The list can be narrowed to one change type or one changed field.
+- Compare tab shows each changed record as a line-by-line JSON diff in unified or split view, with
+  red and green highlighting, line numbers for both sides and folded unchanged lines. A compact
+  summary view is still available.
+- The request list can be resized by dragging its edge (or with the arrow keys); double-click the
+  edge to reset. The size is remembered.
+- Response, Payload and Headers tabs for the selected request. The chosen tab stays open while
+  moving between requests.
+- Payload tab: JSON request bodies get the same search, filters, table and export as responses;
+  form data is shown as a table; other bodies are shown as text. Query parameters are listed too.
+- Headers tab with the request URL, method, status, and the response and request headers.
+- Credential-like headers, query parameters and form fields (`Authorization`, `Cookie`, tokens,
+  API keys, passwords) are masked until revealed.
+
 ## [0.1.3] - 2026-10-27
 
 ### Added

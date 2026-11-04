@@ -1,11 +1,12 @@
 import { Ban, RotateCw, Search } from 'lucide-react';
-import { useId, useMemo, useState, type KeyboardEvent } from 'react';
+import { useId, useMemo, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { filterRequests, isFailedStatus, type CapturedRequest } from '../../network/requests';
 import type { CaptureStatus } from '../hooks/useRequestCapture';
 import { StatusMessage } from './StatusMessage';
 
 interface RequestListProps {
   className: string;
+  style?: CSSProperties;
   requests: readonly CapturedRequest[];
   status: CaptureStatus;
   selectedId: string | null;
@@ -16,6 +17,7 @@ interface RequestListProps {
 
 export function RequestList({
   className,
+  style,
   requests,
   status,
   selectedId,
@@ -111,7 +113,7 @@ export function RequestList({
   }
 
   return (
-    <aside className={className} aria-label="Requests">
+    <aside className={className} style={style} aria-label="Requests">
       <div className="flex h-8 shrink-0 items-center gap-1 border-b border-line bg-surface-alt px-1.5">
         <div className="relative min-w-0 flex-1">
           <Search

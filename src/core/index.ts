@@ -1,4 +1,9 @@
-export { findCollections, getCollectionRecords, type Collection } from './collections';
+export {
+  findCollections,
+  findSharedCollections,
+  getCollectionRecords,
+  type Collection,
+} from './collections';
 export {
   compileQuery,
   filterRecords,
@@ -42,3 +47,25 @@ export {
   type Schema,
   type SchemaField,
 } from './schema';
+export {
+  countChangedFields,
+  diffCollections,
+  diffSchemas,
+  type ChangeKind,
+  type CollectionDiff,
+  type RecordChange,
+  type RecordMatch,
+  type StructureChange,
+  type ValueChange,
+} from './diff';
+export {
+  diffLines,
+  foldUnchangedLines,
+  MAX_DIFF_LINES,
+  toSplitRows,
+  type DiffLine,
+  type DiffSegment,
+  type LineKind,
+  type LineValueType,
+  type SplitRow,
+} from './lineDiff';

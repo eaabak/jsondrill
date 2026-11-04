@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findCollections, getCollectionRecords } from '../src/core';
+import { findCollections, findSharedCollections, getCollectionRecords } from '../src/core';
 
 const labels = (root: unknown) => findCollections(root).map((collection) => collection.label);
 
@@ -27,5 +27,22 @@ describe('findCollections', () => {
     expect(getCollectionRecords({ id: 1 }, [])).toEqual([{ id: 1 }]);
     expect(labels(42)).toEqual(['(root)']);
     expect(getCollectionRecords(42, [])).toEqual([42]);
+  });
+});
+
+describe('findSharedCollections', () => {
+  it('keeps only collections present in both documents', () => {
+    const before = { data: { users: [{ id: 1 }] } };
+    const after = { data: { users: [{ id: 1 }, { id: 2 }] }, extra: [{ id: 3 }] };
+    expect(findSharedCollections(before, after).map((collection) => collection.label)).toEqual([
+      'data.users',
+      '(root object)',
+    ]);
+  });
+
+  it('compares root arrays directly', () => {
+    expect(findSharedCollections([1, 2], [3])).toEqual([
+      { key: '', path: [], label: '(root)', size: 1 },
+    ]);
   });
 });
