@@ -56,15 +56,18 @@ https://github.com/eaabak/jsondrill
 
 **Graphic assets** (all in this folder):
 
-| Asset                      | File                      |
-| -------------------------- | ------------------------- |
-| Store icon (128×128)       | `store-icon-128.png`      |
-| Screenshot 1 (1280×800)    | `screenshot-1-table.png`  |
-| Screenshot 2 (1280×800)    | `screenshot-2-json.png`   |
-| Screenshot 3 (1280×800)    | `screenshot-3-dark.png`   |
-| Small promo tile (440×280) | `promo-small-440x280.png` |
+| Asset                      | File                       |
+| -------------------------- | -------------------------- |
+| Store icon (128×128)       | `store-icon-128.png`       |
+| Screenshot 1 (1280×800)    | `screenshot-4-compare.png` |
+| Screenshot 2 (1280×800)    | `screenshot-5-split.png`   |
+| Screenshot 3 (1280×800)    | `screenshot-6-payload.png` |
+| Screenshot 4 (1280×800)    | `screenshot-1-table.png`   |
+| Screenshot 5 (1280×800)    | `screenshot-3-dark.png`    |
+| Small promo tile (440×280) | `promo-small-440x280.png`  |
 
-The screenshots show synthetic sample data.
+The store allows five screenshots; `screenshot-2-json.png` is kept as a spare. The screenshots
+show synthetic sample data.
 
 **Official URL / Homepage:** https://github.com/eaabak/jsondrill
 

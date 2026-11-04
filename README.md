@@ -36,6 +36,8 @@ without browsing thousands of nested objects or writing JSONPath.
 - Light and dark themes following the DevTools setting
 - Toolbar popup with quick-start steps for new users
 
+![JSONDrill comparing two calls to the same endpoint as a unified and split diff](docs/compare.gif)
+
 ## Install
 
 Install JSONDrill from the [Chrome Web Store](https://chromewebstore.google.com/detail/jsondrill/injlohhmedliakccmmpbipbnjjmonkip), then open
