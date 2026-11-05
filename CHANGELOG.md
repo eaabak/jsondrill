@@ -6,6 +6,8 @@ All notable changes to JSONDrill are documented in this file. The format follows
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-05
+
 ### Added
 
 - After an update, the toolbar icon shows a NEW badge. Opening the popup clears it and links to the
@@ -74,7 +76,8 @@ All notable changes to JSONDrill are documented in this file. The format follows
 - Virtualized table view, lazily expanded JSON tree, and copy or download of matching records.
 - Light and dark themes following the DevTools setting.
 
-[Unreleased]: https://github.com/eaabak/jsondrill/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/eaabak/jsondrill/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/eaabak/jsondrill/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/eaabak/jsondrill/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/eaabak/jsondrill/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/eaabak/jsondrill/compare/v0.1.1...v0.1.2
