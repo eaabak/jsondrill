@@ -19,6 +19,12 @@ export default defineConfig({
         devtools: fromRoot('devtools.html'),
         panel: fromRoot('panel.html'),
         popup: fromRoot('popup.html'),
+        background: fromRoot('src/background.ts'),
+      },
+      output: {
+        // The manifest refers to the service worker by a fixed name.
+        entryFileNames: (chunk) =>
+          chunk.name === 'background' ? 'background.js' : 'assets/[name]-[hash].js',
       },
     },
   },

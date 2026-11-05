@@ -11,6 +11,10 @@ describe('extension manifest', () => {
     expect(manifest.action.default_popup).toBe('popup.html');
   });
 
+  it('runs the update badge service worker built by Vite', () => {
+    expect(manifest.background).toEqual({ service_worker: 'background.js', type: 'module' });
+  });
+
   it('requests no permissions', () => {
     expect(manifest).not.toHaveProperty('permissions');
     expect(manifest).not.toHaveProperty('host_permissions');

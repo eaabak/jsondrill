@@ -86,7 +86,8 @@ npm run build
 ## Privacy
 
 JSONDrill runs entirely locally. It requests no extension permissions, makes no network
-requests, collects no analytics and stores no request or response data on disk (it only remembers
+requests of its own (opening DevTools only asks the browser to check for a JSONDrill update),
+collects no analytics and stores no request or response data on disk (it only remembers
 the size of the request list). Request details come from the
 DevTools network log and stay in memory; response bodies are read on demand through the DevTools
 API only while a request is selected. See the full
@@ -110,6 +111,7 @@ src/
   network/   captured request model and the chrome.devtools adapter
   panel/     React UI: components, hooks and export helpers
   devtools.ts registers the panel
+  background.ts  service worker: NEW badge after an update, update checks
 tests/       Vitest suites for core and network logic
 ```
 

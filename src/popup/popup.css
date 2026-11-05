@@ -62,6 +62,32 @@ h1 {
   color: var(--fg-muted);
 }
 
+.update {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 12px 16px 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--step);
+  border-radius: 4px;
+  background: var(--bg-alt);
+}
+
+.update[hidden] {
+  display: none;
+}
+
+.update a {
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.update a:hover {
+  text-decoration: underline;
+}
+
 main {
   padding: 12px 16px 14px;
 }

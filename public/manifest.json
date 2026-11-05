@@ -6,6 +6,10 @@
   "description": "Smart JSON filtering directly inside Chrome DevTools.",
   "minimum_chrome_version": "120",
   "devtools_page": "devtools.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "homepage_url": "https://github.com/eaabak/jsondrill",
   "action": {
     "default_title": "JSONDrill: open DevTools to use",

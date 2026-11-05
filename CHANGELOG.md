@@ -6,6 +6,13 @@ All notable changes to JSONDrill are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- After an update, the toolbar icon shows a NEW badge. Opening the popup clears it and links to the
+  release notes of the new version.
+- Opening DevTools asks the browser to check for a newer JSONDrill right away instead of waiting
+  for its own check every few hours. The update is installed once DevTools is closed.
+
 ## [0.2.0] - 2026-11-04
 
 ### Added
