@@ -41,8 +41,8 @@
     "version": "node scripts/sync-version.mjs && git add public/manifest.json"
   },
   "dependencies": {
-    "@tanstack/react-virtual": "^3.14.24",
-    "lucide-react": "^1.65.0",
+    "@tanstack/react-virtual": "^3.14.26",
+    "lucide-react": "^1.70.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
