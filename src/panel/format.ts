@@ -1,4 +1,5 @@
 import { isJsonObject, type SchemaField } from '../core';
+import { getRequestSpeed } from '../network/insights';
 
 const MAX_DISPLAY_CHARS = 300;
 const PREVIEW_KEYS = 5;
@@ -53,4 +54,35 @@ export function formatTime(timestamp: number): string {
 
 export function getErrorMessage(error: unknown, fallback: string): string {
   return error instanceof Error && error.message !== '' ? error.message : fallback;
+}
+
+const SPEED_CLASSES = { normal: 'text-muted', slow: 'text-warning', 'very-slow': 'text-error' };
+
+export function speedClass(duration: number | null): string {
+  return SPEED_CLASSES[getRequestSpeed(duration)];
+}
+
+const DATE_TIME_FORMAT = new Intl.DateTimeFormat('en-GB', {
+  dateStyle: 'medium',
+  timeStyle: 'medium',
+});
+
+export function formatDateTime(timestamp: number): string {
+  return DATE_TIME_FORMAT.format(timestamp);
+}
+
+const RELATIVE_UNITS = [
+  { unit: 'day', ms: 86_400_000 },
+  { unit: 'hour', ms: 3_600_000 },
+  { unit: 'minute', ms: 60_000 },
+  { unit: 'second', ms: 1000 },
+] as const;
+const RELATIVE_FORMAT = new Intl.RelativeTimeFormat('en', { numeric: 'always' });
+
+/** "in 12 minutes" or "3 hours ago", relative to `now`. */
+export function formatRelativeTime(timestamp: number, now: number): string {
+  const delta = timestamp - now;
+  const { unit, ms } =
+    RELATIVE_UNITS.find((candidate) => Math.abs(delta) >= candidate.ms) ?? RELATIVE_UNITS[3];
+  return RELATIVE_FORMAT.format(Math.trunc(delta / ms), unit);
 }

@@ -1,3 +1,5 @@
+import { detectGraphql, type GraphqlCall } from './graphql';
+
 export interface NameValue {
   name: string;
   value: string;
@@ -22,7 +24,11 @@ export interface CapturedRequest {
   mimeType: string;
   size: number;
   startedAt: number;
+  /** Total time in milliseconds, or null when Chrome did not report it. */
+  duration: number | null;
+  timings: RequestTimings | null;
   isJson: boolean;
+  graphql: GraphqlCall | null;
   requestHeaders: readonly NameValue[];
   responseHeaders: readonly NameValue[];
   queryParams: readonly NameValue[];
@@ -30,9 +36,21 @@ export interface CapturedRequest {
   readBody: () => Promise<string>;
 }
 
+/** Phases of a request in milliseconds; null when a phase did not happen or is unknown. */
+export interface RequestTimings {
+  blocked: number | null;
+  dns: number | null;
+  connect: number | null;
+  send: number | null;
+  wait: number | null;
+  receive: number | null;
+}
+
 /** The subset of a HAR entry JSONDrill relies on. */
 export interface HarEntryLike {
   startedDateTime: string;
+  time?: number;
+  timings?: HarTimings;
   request: {
     method: string;
     url: string;
@@ -46,6 +64,8 @@ export interface HarEntryLike {
     content: { mimeType?: string; size: number };
   };
 }
+
+type HarTimings = { readonly [phase in keyof RequestTimings]?: number | null };
 
 interface HarPostData {
   mimeType?: string;
@@ -63,10 +83,16 @@ export interface NetworkSource {
 export interface RequestFilter {
   text: string;
   jsonOnly: boolean;
+  /** Keep only failed requests, HTTP errors and GraphQL responses with errors. */
+  errorsOnly?: boolean;
 }
+
+/** GraphQL error messages by request id; only requests with errors have an entry. */
+export type GraphqlErrors = ReadonlyMap<string, readonly string[]>;
 
 export const MAX_CAPTURED_REQUESTS = 500;
 const FIRST_ERROR_STATUS = 400;
+const NO_GRAPHQL_ERRORS: GraphqlErrors = new Map();
 
 const JSON_MIME_TYPE = /^[a-z0-9.+-]+\/(?:[a-z0-9.-]+\+)?json$/;
 const FORM_URLENCODED = 'application/x-www-form-urlencoded';
@@ -81,6 +107,8 @@ export function createCapturedRequest(
   const { method, url } = entry.request;
   const { status, content } = entry.response;
   const mimeType = content.mimeType ?? '';
+  const queryParams = toNameValues(entry.request.queryString);
+  const payload = createPayload(entry.request.postData);
   return {
     // HAR entries carry no stable identifier; start time plus method and URL identifies the
     // same request whether it arrives through getHAR() or onRequestFinished.
@@ -92,17 +120,26 @@ export function createCapturedRequest(
     mimeType,
     size: content.size,
     startedAt: Date.parse(entry.startedDateTime) || 0,
+    duration: toDuration(entry.time),
+    timings: createTimings(entry.timings),
     isJson: isJsonMimeType(mimeType),
+    graphql: detectGraphql(payload, queryParams),
     requestHeaders: toNameValues(entry.request.headers).toSorted(compareNames),
     responseHeaders: toNameValues(entry.response.headers).toSorted(compareNames),
-    queryParams: toNameValues(entry.request.queryString),
-    payload: createPayload(entry.request.postData),
+    queryParams,
+    payload,
     readBody,
   };
 }
 
+/** GraphQL sends every operation to one URL, so the operation is part of the endpoint. */
 export function isSameEndpoint(a: CapturedRequest, b: CapturedRequest): boolean {
-  return a.method === b.method && getEndpointUrl(a.url) === getEndpointUrl(b.url);
+  return (
+    a.method === b.method &&
+    getEndpointUrl(a.url) === getEndpointUrl(b.url) &&
+    a.graphql?.type === b.graphql?.type &&
+    a.graphql?.name === b.graphql?.name
+  );
 }
 
 export function isSensitiveName(name: string): boolean {
@@ -131,15 +168,36 @@ export function mergeRequests(
 
 export function filterRequests(
   requests: readonly CapturedRequest[],
-  { text, jsonOnly }: RequestFilter,
+  { text, jsonOnly, errorsOnly = false }: RequestFilter,
+  graphqlErrors: GraphqlErrors = NO_GRAPHQL_ERRORS,
 ): CapturedRequest[] {
   const needle = text.trim().toLowerCase();
   return requests.filter(
     (request) =>
       (!jsonOnly || request.isJson) &&
-      (needle === '' ||
-        `${request.method} ${request.status} ${request.url}`.toLowerCase().includes(needle)),
+      (!errorsOnly || isFailedStatus(request.status) || graphqlErrors.has(request.id)) &&
+      (needle === '' || getSearchText(request).includes(needle)),
   );
+}
+
+function getSearchText({ method, status, url, graphql }: CapturedRequest): string {
+  return `${method} ${status} ${url} ${graphql?.name ?? ''}`.toLowerCase();
+}
+
+function toDuration(time: number | null | undefined): number | null {
+  return typeof time === 'number' && Number.isFinite(time) && time >= 0 ? time : null;
+}
+
+function createTimings(timings: HarTimings | undefined): RequestTimings | null {
+  if (!timings) return null;
+  return {
+    blocked: toDuration(timings.blocked),
+    dns: toDuration(timings.dns),
+    connect: toDuration(timings.connect),
+    send: toDuration(timings.send),
+    wait: toDuration(timings.wait),
+    receive: toDuration(timings.receive),
+  };
 }
 
 function getEndpointUrl(url: string): string {

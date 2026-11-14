@@ -1,13 +1,35 @@
-import { Ban, RotateCw, Search } from 'lucide-react';
+import { Ban, Info, RotateCw, Search, TriangleAlert } from 'lucide-react';
 import { useId, useMemo, useState, type CSSProperties, type KeyboardEvent } from 'react';
-import { filterRequests, isFailedStatus, type CapturedRequest } from '../../network/requests';
+import { formatDuration } from '../../core';
+import { graphqlLabel } from '../../network/graphql';
+import {
+  countRepeats,
+  REPEAT_WINDOW_MS,
+  sortRequests,
+  type RequestOrder,
+} from '../../network/insights';
+import {
+  filterRequests,
+  isFailedStatus,
+  type CapturedRequest,
+  type GraphqlErrors,
+} from '../../network/requests';
+import { speedClass } from '../format';
 import type { CaptureStatus } from '../hooks/useRequestCapture';
+import { RepeatBadge, RequestLegend } from './RequestLegend';
 import { StatusMessage } from './StatusMessage';
+
+const ORDERS: readonly { value: RequestOrder; label: string }[] = [
+  { value: 'newest', label: 'Newest first' },
+  { value: 'slowest', label: 'Slowest first' },
+  { value: 'problems', label: 'Problems first' },
+];
 
 interface RequestListProps {
   className: string;
   style?: CSSProperties;
   requests: readonly CapturedRequest[];
+  graphqlErrors: GraphqlErrors;
   status: CaptureStatus;
   selectedId: string | null;
   onSelect: (request: CapturedRequest) => void;
@@ -19,6 +41,7 @@ export function RequestList({
   className,
   style,
   requests,
+  graphqlErrors,
   status,
   selectedId,
   onSelect,
@@ -27,11 +50,21 @@ export function RequestList({
 }: RequestListProps) {
   const [text, setText] = useState('');
   const [jsonOnly, setJsonOnly] = useState(true);
+  const [errorsOnly, setErrorsOnly] = useState(false);
+  const [order, setOrder] = useState<RequestOrder>('newest');
+  const [showLegend, setShowLegend] = useState(false);
   const visible = useMemo(
-    () => filterRequests(requests, { text, jsonOnly }),
-    [requests, text, jsonOnly],
+    () =>
+      sortRequests(
+        filterRequests(requests, { text, jsonOnly, errorsOnly }, graphqlErrors),
+        order,
+        graphqlErrors,
+      ),
+    [requests, text, jsonOnly, errorsOnly, order, graphqlErrors],
   );
+  const repeats = useMemo(() => countRepeats(requests), [requests]);
   const listId = useId();
+  const legendId = useId();
   const optionId = (index: number) => `${listId}-option-${index}`;
   const selectedIndex = visible.findIndex((request) => request.id === selectedId);
 
@@ -68,6 +101,7 @@ export function RequestList({
     content = (
       <StatusMessage>
         No requests match the filter.
+        {errorsOnly && ' Clear the Errors option to include successful requests.'}
         {jsonOnly && ' Clear the JSON option to include other content types.'}
       </StatusMessage>
     );
@@ -82,6 +116,8 @@ export function RequestList({
       >
         {visible.map((request, index) => {
           const isSelected = request.id === selectedId;
+          const errors = graphqlErrors.get(request.id);
+          const repeatCount = repeats.get(request.id);
           return (
             // Keyboard selection is handled by the listbox through aria-activedescendant.
             // oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus
@@ -90,19 +126,36 @@ export function RequestList({
               id={optionId(index)}
               role="option"
               aria-selected={isSelected}
-              title={request.url}
+              title={errors ? `${request.url}\nGraphQL errors: ${errors.join('; ')}` : request.url}
               onClick={() => onSelect(request)}
               className={`flex h-[22px] items-center gap-2 border-b border-line/50 px-1.5 font-mono text-[11px] ${
                 isSelected ? 'bg-selected' : 'hover:bg-hover'
               }`}
             >
               <span className="w-11 shrink-0 font-semibold">{request.method}</span>
-              <span className="min-w-0 flex-1 truncate">{request.path}</span>
+              <span className="min-w-0 flex-1 truncate">
+                {request.graphql && (
+                  <span className="text-syntax-key">{graphqlLabel(request.graphql)} </span>
+                )}
+                {request.path}
+              </span>
+              {repeatCount !== undefined && (
+                <RepeatBadge
+                  count={repeatCount}
+                  title={`Sent ${repeatCount} times within ${formatDuration(REPEAT_WINDOW_MS)} of each other with the same URL and body`}
+                />
+              )}
               <span
-                className={`shrink-0 tabular-nums ${
-                  isFailedStatus(request.status) ? 'text-error' : 'text-muted'
+                className={`w-12 shrink-0 text-right tabular-nums ${speedClass(request.duration)}`}
+              >
+                {request.duration === null ? '' : formatDuration(request.duration)}
+              </span>
+              <span
+                className={`flex w-9 shrink-0 items-center justify-end gap-0.5 tabular-nums ${
+                  errors || isFailedStatus(request.status) ? 'text-error' : 'text-muted'
                 }`}
               >
+                {errors && <TriangleAlert size={10} aria-label="GraphQL errors" />}
                 {request.status === 0 ? '—' : request.status}
               </span>
             </div>
@@ -131,17 +184,6 @@ export function RequestList({
             onChange={(event) => setText(event.target.value)}
           />
         </div>
-        <label
-          className="flex shrink-0 items-center gap-1 text-muted"
-          title="Only show JSON content types"
-        >
-          <input
-            type="checkbox"
-            checked={jsonOnly}
-            onChange={(event) => setJsonOnly(event.target.checked)}
-          />
-          JSON
-        </label>
         <button
           type="button"
           className="jd-icon-button"
@@ -162,9 +204,62 @@ export function RequestList({
           <Ban size={13} aria-hidden />
         </button>
       </div>
+      <div className="flex h-7 shrink-0 items-center gap-2 border-b border-line bg-surface-alt px-1.5">
+        <label
+          className="flex shrink-0 items-center gap-1 text-muted"
+          title="Only show JSON content types"
+        >
+          <input
+            type="checkbox"
+            checked={jsonOnly}
+            onChange={(event) => setJsonOnly(event.target.checked)}
+          />
+          JSON
+        </label>
+        <label
+          className="flex shrink-0 items-center gap-1 text-muted"
+          title="Only show failed requests, HTTP errors (4xx, 5xx) and GraphQL responses with errors"
+        >
+          <input
+            type="checkbox"
+            checked={errorsOnly}
+            onChange={(event) => setErrorsOnly(event.target.checked)}
+          />
+          Errors
+        </label>
+        <select
+          className="jd-select ml-auto h-5 min-w-0"
+          aria-label="Sort requests"
+          title="Sort requests"
+          value={order}
+          onChange={(event) => {
+            const next = ORDERS.find((candidate) => candidate.value === event.target.value);
+            if (next) setOrder(next.value);
+          }}
+        >
+          {ORDERS.map((candidate) => (
+            <option key={candidate.value} value={candidate.value}>
+              {candidate.label}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="min-h-0 flex-1 overflow-auto">{content}</div>
-      <div className="flex h-6 shrink-0 items-center border-t border-line bg-surface-alt px-1.5 text-muted tabular-nums">
-        {visible.length} / {requests.length} requests
+      {showLegend && <RequestLegend id={legendId} />}
+      <div className="flex h-6 shrink-0 items-center justify-between border-t border-line bg-surface-alt px-1.5 text-muted tabular-nums">
+        <span>
+          {visible.length} / {requests.length} requests
+        </span>
+        <button
+          type="button"
+          className="flex items-center gap-1 hover:text-fg"
+          aria-expanded={showLegend}
+          aria-controls={legendId}
+          onClick={() => setShowLegend(!showLegend)}
+        >
+          <Info size={12} aria-hidden />
+          Colors
+        </button>
       </div>
     </aside>
   );

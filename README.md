@@ -17,13 +17,20 @@ without browsing thousands of nested objects or writing JSONPath.
 
 ## Features
 
-- Request list with method, path and status, newest first, with text and JSON-only filters
+- Request list with method, path, duration and status, with text, JSON-only and errors-only
+  filters, sorted newest first, slowest first or problems first
+- Slow requests (1 s, 3 s), HTTP errors and failed requests are color-coded, with a legend in the
+  panel; requests repeated within a second get a `2×` badge
+- **GraphQL**: operation type and name in the list, and responses with an `errors` field are
+  flagged even when the status is 200
 - **Compare** any response with the previous call to the same endpoint (or any other response):
   removed, added and retyped fields, plus added, removed and changed records paired by `id`,
   shown as a colored line-by-line diff in unified or split view
 - **Response, Payload and Headers** tabs: JSON request bodies get the same search and filters as
   responses, form data and query parameters are shown as tables, and credential-like values
   (`Authorization`, cookies, tokens, passwords) stay masked until you reveal them
+- Headers tab also shows a timing breakdown (waiting for the server vs downloading), a summary of
+  all calls to the same endpoint, and the decoded JWT of the `Authorization` header with its expiry
 - Automatic collection discovery (`data.items`, root arrays, nested wrappers) with a picker
 - Schema detection from a bounded sample: types, nullable fields, missing properties, nested
   objects and arrays
@@ -90,7 +97,8 @@ requests of its own (opening DevTools only asks the browser to check for a JSOND
 collects no analytics and stores no request or response data on disk (it only remembers
 the size of the request list). Request details come from the
 DevTools network log and stay in memory; response bodies are read on demand through the DevTools
-API only while a request is selected. See the full
+API only while a request is selected, except GraphQL responses, which are read as they arrive to
+look for an `errors` field. See the full
 [privacy policy](PRIVACY.md).
 
 ## Development

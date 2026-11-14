@@ -21,7 +21,7 @@ export {
   type RecordQuery,
   type SearchMode,
 } from './filters';
-export { formatBytes } from './format';
+export { formatBytes, formatDuration } from './format';
 export {
   getSizeLimitError,
   isJsonObject,

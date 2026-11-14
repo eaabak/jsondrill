@@ -1,6 +1,9 @@
+import { TriangleAlert } from 'lucide-react';
 import { useId, useState, type KeyboardEvent, type ReactNode } from 'react';
-import { formatBytes } from '../../core';
-import { isFailedStatus, type CapturedRequest } from '../../network/requests';
+import { formatBytes, formatDuration } from '../../core';
+import { graphqlLabel } from '../../network/graphql';
+import { isFailedStatus, type CapturedRequest, type GraphqlErrors } from '../../network/requests';
+import { formatCount, speedClass } from '../format';
 import { ComparePanel } from './ComparePanel';
 import { HeadersPanel } from './HeadersPanel';
 import { PayloadPanel } from './PayloadPanel';
@@ -18,12 +21,20 @@ const TABS: readonly { value: DetailTab; label: string }[] = [
 interface RequestPanelProps {
   request: CapturedRequest;
   requests: readonly CapturedRequest[];
+  graphqlErrors: GraphqlErrors;
   tab: DetailTab;
   onTabChange: (tab: DetailTab) => void;
 }
 
 // Tabs stay mounted after the first visit so filters survive switching.
-export function RequestPanel({ request, requests, tab, onTabChange }: RequestPanelProps) {
+export function RequestPanel({
+  request,
+  requests,
+  graphqlErrors,
+  tab,
+  onTabChange,
+}: RequestPanelProps) {
+  const errors = graphqlErrors.get(request.id);
   const [visited, setVisited] = useState<ReadonlySet<DetailTab>>(() => new Set([tab]));
   if (!visited.has(tab)) setVisited(new Set(visited).add(tab));
   const baseId = useId();
@@ -43,7 +54,7 @@ export function RequestPanel({ request, requests, tab, onTabChange }: RequestPan
   const panels: Record<DetailTab, ReactNode> = {
     response: <ResponsePanel request={request} />,
     payload: <PayloadPanel request={request} />,
-    headers: <HeadersPanel request={request} />,
+    headers: <HeadersPanel request={request} requests={requests} graphqlErrors={graphqlErrors} />,
     compare: <ComparePanel request={request} requests={requests} />,
   };
 
@@ -74,12 +85,28 @@ export function RequestPanel({ request, requests, tab, onTabChange }: RequestPan
           title={request.url}
         >
           <span className="shrink-0 font-semibold">{request.method}</span>
-          <span className="min-w-0 flex-1 truncate">{request.path}</span>
+          <span className="min-w-0 flex-1 truncate">
+            {request.graphql && (
+              <span className="text-syntax-key">{graphqlLabel(request.graphql)} </span>
+            )}
+            {request.path}
+          </span>
+          {errors && (
+            <span className="flex shrink-0 items-center gap-1 text-error" title={errors.join('\n')}>
+              <TriangleAlert size={11} aria-hidden />
+              {formatCount(errors.length, 'GraphQL error')}
+            </span>
+          )}
           <span
             className={`shrink-0 tabular-nums ${isFailedStatus(request.status) ? 'text-error' : ''}`}
           >
             {request.status === 0 ? 'failed' : request.status}
           </span>
+          {request.duration !== null && (
+            <span className={`shrink-0 tabular-nums ${speedClass(request.duration)}`}>
+              {formatDuration(request.duration)}
+            </span>
+          )}
           {request.size > 0 && (
             <span className="shrink-0 text-muted">{formatBytes(request.size)}</span>
           )}

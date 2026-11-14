@@ -9,7 +9,8 @@ export interface NameValueRow extends NameValue {
 export interface NameValueSection {
   title: string;
   rows: readonly NameValueRow[];
-  mask?: boolean;
+  /** `true` masks values whose name looks like a credential; `'all'` masks every value. */
+  mask?: boolean | 'all';
 }
 
 const MASK = '••••••••';
@@ -50,7 +51,9 @@ export function NameValueTable({ sections }: { sections: readonly NameValueSecti
                 {section.rows.map((row, rowIndex) => {
                   const key = `${sectionIndex}:${rowIndex}`;
                   const isSensitive =
-                    section.mask === true && row.value !== '' && isSensitiveName(row.name);
+                    row.value !== '' &&
+                    (section.mask === 'all' ||
+                      (section.mask === true && isSensitiveName(row.name)));
                   const isHidden = isSensitive && !revealed.has(key);
                   return (
                     <tr key={key} className="border-b border-line/50 align-top">

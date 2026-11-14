@@ -4,6 +4,7 @@ import { RequestList } from './components/RequestList';
 import { RequestPanel, type DetailTab } from './components/RequestPanel';
 import { Splitter } from './components/Splitter';
 import { StatusMessage } from './components/StatusMessage';
+import { useGraphqlErrors } from './hooks/useGraphqlErrors';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useRequestCapture } from './hooks/useRequestCapture';
 import { useStoredSize } from './hooks/useStoredSize';
@@ -17,6 +18,7 @@ const MIN_DETAILS_HEIGHT = 160;
 
 export function App({ network }: { network: NetworkSource }) {
   const { requests, selected, select, clear, status } = useRequestCapture(network);
+  const graphqlErrors = useGraphqlErrors(requests);
   const [tab, setTab] = useState<DetailTab>('response');
   const isSideBySide = useMediaQuery(SIDE_BY_SIDE);
   const [listWidth, setListWidth] = useStoredSize('jsondrill.requestListWidth');
@@ -39,6 +41,7 @@ export function App({ network }: { network: NetworkSource }) {
         className="flex h-2/5 min-h-0 min-w-0 shrink-0 flex-col md:h-full md:w-72"
         style={listStyle}
         requests={requests}
+        graphqlErrors={graphqlErrors}
         status={status}
         selectedId={selected?.id ?? null}
         onSelect={select}
@@ -59,6 +62,7 @@ export function App({ network }: { network: NetworkSource }) {
             key={selected.id}
             request={selected}
             requests={requests}
+            graphqlErrors={graphqlErrors}
             tab={tab}
             onTabChange={setTab}
           />

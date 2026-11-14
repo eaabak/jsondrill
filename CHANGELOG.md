@@ -6,6 +6,28 @@ All notable changes to JSONDrill are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The request list shows how long each request took. Requests of 1 s or longer are orange and
+  requests of 3 s or longer are red.
+- Errors option that keeps only failed requests, HTTP errors and GraphQL responses with errors.
+- The request list can be sorted newest first, slowest first or problems first (failed and 5xx,
+  4xx, GraphQL errors, very slow, slow).
+- Colors button under the request list that explains what each color and badge means.
+- GraphQL calls show their operation type and name. Responses that carry an `errors` field are
+  marked as errors even when the status is 200, and Compare pairs calls of the same operation.
+- A badge such as `2×` marks requests sent again within one second with the same method, URL and
+  body.
+- Headers tab: timing breakdown (queued, DNS, connecting, sending, waiting for the server,
+  downloading), a summary of all calls to the same endpoint (calls, errors, average and slowest
+  time), and the decoded token of a JWT `Authorization` header with its expiry. Token claims stay
+  masked until revealed; the signature is not verified.
+
+### Changed
+
+- The bodies of GraphQL responses are read as they arrive to look for errors. Other response
+  bodies are still read only when the request is selected.
+
 ## [0.2.1] - 2026-11-05
 
 ### Added
