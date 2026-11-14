@@ -1,5 +1,3 @@
-// Update notice shared by the background service worker, the DevTools page and the toolbar popup.
-
 /** Sent by the DevTools page so the service worker asks the browser to look for a newer version. */
 export const CHECK_FOR_UPDATE_MESSAGE = 'jsondrill:check-for-update';
 

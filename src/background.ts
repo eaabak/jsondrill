@@ -1,5 +1,3 @@
-// Background service worker: marks the toolbar icon after an update, and lets the DevTools page
-// ask the browser to look for a newer version.
 import { CHECK_FOR_UPDATE_MESSAGE, isVersionChange, showUpdateBadge } from './updates';
 
 chrome.runtime.onInstalled.addListener((details) => {
