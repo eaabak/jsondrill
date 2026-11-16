@@ -13,12 +13,18 @@
       </div>
     </header>
 
-    <section class="update" data-update hidden>
-      <strong>Updated to <span data-update-version></span></strong>
-      <a data-update-link target="_blank" rel="noreferrer">See what's new</a>
+    <section class="updates" data-updates aria-labelledby="updates-title" hidden>
+      <div class="updates-header">
+        <h2 id="updates-title">Latest updates</h2>
+        <button type="button" class="close" data-updates-close aria-label="Close latest updates">
+          ×
+        </button>
+      </div>
+      <ol class="notes" data-updates-list></ol>
+      <a class="more" data-updates-more target="_blank" rel="noreferrer">See all releases</a>
     </section>
 
-    <main>
+    <main data-guide>
       <h2>How to use</h2>
       <ol class="steps">
         <li>Open DevTools with <kbd data-shortcut>F12</kbd>.</li>
@@ -32,11 +38,13 @@
       <p class="note">
         JSONDrill runs entirely on your computer and only sees requests made while DevTools is open.
       </p>
+      <a class="open-file" href="/viewer.html" target="_blank">Open a JSON file or paste JSON</a>
     </main>
 
     <footer class="footer">
+      <button type="button" class="link" data-updates-open>What's new</button>
       <a href="https://github.com/eaabak/jsondrill#readme" target="_blank" rel="noreferrer">
-        Documentation
+        Docs
       </a>
       <a href="https://github.com/eaabak/jsondrill/issues" target="_blank" rel="noreferrer">
         Report an issue
