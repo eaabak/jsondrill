@@ -18,7 +18,7 @@ without browsing thousands of nested objects or writing JSONPath.
 ## Features
 
 - Request list with method, path, duration and status, with text, JSON-only and errors-only
-  filters, sorted newest first, slowest first or problems first
+  filters, in time order like the Network tab, or sorted slowest first or problems first
 - Slow requests (1 s, 3 s), HTTP errors and failed requests are color-coded, with a legend in the
   panel; requests repeated within a second get a `2×` badge
 - **GraphQL**: operation type and name in the list, and responses with an `errors` field are
@@ -30,7 +30,11 @@ without browsing thousands of nested objects or writing JSONPath.
   responses, form data and query parameters are shown as tables, and credential-like values
   (`Authorization`, cookies, tokens, passwords) stay masked until you reveal them
 - Headers tab also shows a timing breakdown (waiting for the server vs downloading), a summary of
-  all calls to the same endpoint, and the decoded JWT of the `Authorization` header with its expiry
+  all calls to the same endpoint, and the decoded JWT of the `Authorization` header or a cookie with its expiry
+- **Open a JSON file or paste JSON** from the toolbar popup to explore it in a tab, no DevTools
+  needed
+- **Copy as** a bug report for Jira or GitHub, a cURL command or a `fetch()` call, with tokens,
+  cookies and passwords hidden unless you choose to include them
 - Automatic collection discovery (`data.items`, root arrays, nested wrappers) with a picker
 - Schema detection from a bounded sample: types, nullable fields, missing properties, nested
   objects and arrays

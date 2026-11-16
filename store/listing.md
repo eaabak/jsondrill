@@ -36,19 +36,29 @@ A virtualized table and a lazily expanded JSON tree stay responsive with tens of
 COMPARE RESPONSES
 See what changed between two calls to the same endpoint in one click. JSONDrill lists structure changes first (removed fields, new fields, a number that became a string, a field that became nullable), then the added, removed and changed records, paired by their id. Each changed record is shown as a colored line-by-line diff, in unified or side-by-side view. Narrow the list to a single change type or field, such as only the records whose status changed.
 
+SPOT SLOW AND FAILED REQUESTS
+The request list keeps the order of the Network tab and shows how long each request took. Slow requests are orange, very slow and failed ones are red. Show only the errors, or sort by slowest first or problems first. GraphQL calls show their operation name, and a response that carries errors is marked as failed even when its status is 200.
+
 PAYLOAD AND HEADERS
-Switch between the Response, Payload and Headers tabs of any request. JSON request bodies get the same search, filters and table as responses, so even a bulk POST with hundreds of items is easy to inspect. Form data and query parameters are shown as tables. Authorization headers, cookies, tokens and passwords stay masked until you reveal them.
+Switch between the Response, Payload and Headers tabs of any request. JSON request bodies get the same search, filters and table as responses, so even a bulk POST with hundreds of items is easy to inspect. Form data and query parameters are shown as tables. The Headers tab shows where the time went and decodes a JWT from the Authorization header or a cookie, with its expiry. Authorization headers, cookies, tokens and passwords stay masked until you reveal them.
+
+COPY AS BUG REPORT, CURL OR FETCH
+Turn any request into a ready-to-paste bug report for Jira or GitHub, a cURL command or a fetch() call. Tokens, cookies and passwords are hidden unless you choose to include them.
+
+OPEN A JSON FILE OR PASTE JSON
+No DevTools needed: click the JSONDrill icon, then drop a JSON file or paste JSON. It opens in a tab with the same search, filters, table and JSON views.
 
 COPY AND EXPORT
 Copy the matching records as JSON or download them as a file.
 
 PRIVATE BY DESIGN
-JSONDrill runs entirely on your computer. It requests no permissions, makes no network requests, has no analytics or tracking, and never stores response data on disk.
+JSONDrill runs entirely on your computer. It requests no permissions, makes no network requests, has no analytics or tracking, and never stores response data or opened files on disk.
 
 HOW TO USE
 1. Open DevTools and select the JSONDrill panel.
 2. Reload the page if the request list is empty.
 3. Select a request, then search or add filters.
+To explore a file instead, click the JSONDrill icon in the toolbar and choose "Open a JSON file or paste JSON".
 
 JSONDrill is free and open source under the MIT license:
 https://github.com/eaabak/jsondrill
@@ -78,7 +88,7 @@ show synthetic sample data.
 **Single purpose:**
 
 ```text
-JSONDrill helps developers inspect, search and filter JSON responses of network requests inside a Chrome DevTools panel.
+JSONDrill helps developers inspect, search and filter JSON: the responses of network requests inside a Chrome DevTools panel, and JSON files or text they open themselves.
 ```
 
 **Permission justification:** none needed. The manifest requests no permissions and no host
@@ -88,7 +98,8 @@ permissions; the DevTools APIs it uses are available to every `devtools_page`.
 
 **Data usage:** leave every data category unchecked. Request and response data (including
 headers and request bodies) is read through the DevTools API, processed in memory on the user's
-device and never transmitted, sold or stored.
+device and never transmitted, sold or stored. The same holds for a JSON file or text the user
+opens in the viewer page.
 
 Certify all three statements:
 

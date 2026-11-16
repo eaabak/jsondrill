@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 15 November 2026_
+_Last updated: 16 November 2026_
 
 JSONDrill is a Chrome DevTools extension that helps developers inspect JSON responses. It is
 designed to work entirely on your computer.
@@ -32,9 +32,14 @@ navigates, or when DevTools is closed.
   the browser to check the Chrome Web Store for a newer version of JSONDrill, the same check the
   browser makes on its own every few hours.
 - It contains no analytics, telemetry, advertising or tracking.
-- It does not store request or response data on disk. The only thing it remembers is the size of
-  the request list, kept in the panel's local storage.
+- It does not store request or response data on disk. The only things it remembers are the size
+  of the request list and whether Copy as hides credentials, kept in the extension's local storage.
 - It requests no extension permissions.
+
+## Opening a JSON file
+
+The toolbar popup can open a page where you drop a JSON file or paste JSON. The content is read
+by that page only, kept in memory, and discarded when you close the tab.
 
 ## Copy and export
 

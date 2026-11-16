@@ -6,6 +6,29 @@ All notable changes to JSONDrill are documented in this file. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-16
+
+### Changed
+
+- Simpler controls above the records: the list picker, search and Add filter share one row. The
+  list picker only appears when a response has more than one list, Contains and Exact appear once
+  you type, and Reset appears once there is something to reset.
+- The request list runs in time order like the Network tab: new requests appear at the bottom and
+  the list follows them until you scroll up.
+- Compare shows its change filters in a single row.
+- After an update, the toolbar popup lists what is new instead of linking to the release page. The
+  same list is always available under What's new.
+
+### Added
+
+- Open a JSON file or paste JSON from the toolbar popup. It opens in a tab with the same search,
+  filters, table and JSON views as a response, without DevTools and without any permission.
+- Copy as button on every request with three choices: a bug report (a Markdown summary of the
+  request, the response, any GraphQL errors and a cURL command to reproduce it), a cURL command
+  and a `fetch()` call. Tokens, cookies and passwords are hidden by default.
+- Headers tab: a JWT stored in a cookie (for example `token=…`) is decoded like the one in the
+  `Authorization` header. A token in a header is preferred when both are present.
+
 ## [0.3.0] - 2026-11-15
 
 ### Added
@@ -100,7 +123,8 @@ All notable changes to JSONDrill are documented in this file. The format follows
 - Virtualized table view, lazily expanded JSON tree, and copy or download of matching records.
 - Light and dark themes following the DevTools setting.
 
-[Unreleased]: https://github.com/eaabak/jsondrill/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/eaabak/jsondrill/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/eaabak/jsondrill/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/eaabak/jsondrill/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/eaabak/jsondrill/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/eaabak/jsondrill/compare/v0.1.3...v0.2.0
