@@ -5,6 +5,7 @@ import { graphqlLabel } from '../../network/graphql';
 import { isFailedStatus, type CapturedRequest, type GraphqlErrors } from '../../network/requests';
 import { formatCount, speedClass } from '../format';
 import { ComparePanel } from './ComparePanel';
+import { CopyMenu } from './CopyMenu';
 import { HeadersPanel } from './HeadersPanel';
 import { PayloadPanel } from './PayloadPanel';
 import { ResponsePanel } from './ResponsePanel';
@@ -111,6 +112,7 @@ export function RequestPanel({
             <span className="shrink-0 text-muted">{formatBytes(request.size)}</span>
           )}
         </div>
+        <CopyMenu request={request} graphqlErrors={errors} />
       </header>
       {TABS.filter(({ value }) => visited.has(value)).map(({ value }) => (
         <div
