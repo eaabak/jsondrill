@@ -1,5 +1,13 @@
 import { Ban, Info, RotateCw, Search, TriangleAlert } from 'lucide-react';
-import { useId, useMemo, useState, type CSSProperties, type KeyboardEvent } from 'react';
+import {
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+} from 'react';
 import { formatDuration } from '../../core';
 import { graphqlLabel } from '../../network/graphql';
 import {
@@ -20,10 +28,12 @@ import { RepeatBadge, RequestLegend } from './RequestLegend';
 import { StatusMessage } from './StatusMessage';
 
 const ORDERS: readonly { value: RequestOrder; label: string }[] = [
-  { value: 'newest', label: 'Newest first' },
+  { value: 'time', label: 'By time' },
   { value: 'slowest', label: 'Slowest first' },
   { value: 'problems', label: 'Problems first' },
 ];
+
+const BOTTOM_SLACK_PX = 4;
 
 interface RequestListProps {
   className: string;
@@ -51,7 +61,7 @@ export function RequestList({
   const [text, setText] = useState('');
   const [jsonOnly, setJsonOnly] = useState(true);
   const [errorsOnly, setErrorsOnly] = useState(false);
-  const [order, setOrder] = useState<RequestOrder>('newest');
+  const [order, setOrder] = useState<RequestOrder>('time');
   const [showLegend, setShowLegend] = useState(false);
   const visible = useMemo(
     () =>
@@ -63,6 +73,16 @@ export function RequestList({
     [requests, text, jsonOnly, errorsOnly, order, graphqlErrors],
   );
   const repeats = useMemo(() => countRepeats(requests), [requests]);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const followsNewest = useRef(true);
+
+  // New requests land at the bottom; keep them in view unless the user scrolled up.
+  useLayoutEffect(() => {
+    const scroller = scrollerRef.current;
+    if (scroller && order === 'time' && followsNewest.current) {
+      scroller.scrollTop = scroller.scrollHeight;
+    }
+  });
   const listId = useId();
   const legendId = useId();
   const optionId = (index: number) => `${listId}-option-${index}`;
@@ -244,7 +264,17 @@ export function RequestList({
           ))}
         </select>
       </div>
-      <div className="min-h-0 flex-1 overflow-auto">{content}</div>
+      <div
+        ref={scrollerRef}
+        className="min-h-0 flex-1 overflow-auto"
+        onScroll={({ currentTarget }) => {
+          const gap =
+            currentTarget.scrollHeight - currentTarget.scrollTop - currentTarget.clientHeight;
+          followsNewest.current = gap < BOTTOM_SLACK_PX;
+        }}
+      >
+        {content}
+      </div>
       {showLegend && <RequestLegend id={legendId} />}
       <div className="flex h-6 shrink-0 items-center justify-between border-t border-line bg-surface-alt px-1.5 text-muted tabular-nums">
         <span>

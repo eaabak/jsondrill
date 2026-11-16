@@ -195,8 +195,8 @@ describe('mergeRequests', () => {
   const older = capture('https://x.test/a', '2026-01-01T10:00:00.000Z');
   const newer = capture('https://x.test/b', '2026-01-01T10:00:05.000Z');
 
-  it('orders requests newest first', () => {
-    expect(mergeRequests([older], [newer]).map((request) => request.path)).toEqual(['/b', '/a']);
+  it('orders requests oldest first', () => {
+    expect(mergeRequests([newer], [older]).map((request) => request.path)).toEqual(['/a', '/b']);
   });
 
   it('deduplicates the same request and keeps the incoming copy', () => {
@@ -211,9 +211,9 @@ describe('mergeRequests', () => {
       capture(`https://x.test/${index}`, `2026-01-01T10:00:0${index}.000Z`),
     );
     expect(mergeRequests([], requests, 3).map((request) => request.path)).toEqual([
-      '/4',
-      '/3',
       '/2',
+      '/3',
+      '/4',
     ]);
   });
 });

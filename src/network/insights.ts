@@ -23,7 +23,7 @@ export const REQUEST_ISSUES = [
 
 export type RequestIssue = (typeof REQUEST_ISSUES)[number];
 
-export type RequestOrder = 'newest' | 'slowest' | 'problems';
+export type RequestOrder = 'time' | 'slowest' | 'problems';
 
 export interface EndpointSummary {
   calls: number;
@@ -53,7 +53,7 @@ export function getRequestIssue(
   return speed === 'normal' ? 'none' : speed;
 }
 
-/** Sorts a newest-first list; requests that tie keep their newest-first order. */
+/** Sorts a list kept in time order; requests that tie stay in that order. */
 export function sortRequests(
   requests: readonly CapturedRequest[],
   order: RequestOrder,

@@ -108,19 +108,18 @@ describe('getRequestIssue', () => {
 });
 
 describe('sortRequests', () => {
-  // Newest first, as the request list keeps them.
-  const ok = capture({ url: 'https://x.test/ok', second: 6, time: 20 });
-  const slow = capture({ url: 'https://x.test/slow', second: 5, time: 1200 });
-  const notFound = capture({ url: 'https://x.test/404', second: 4, status: 404, time: 30 });
+  const ok = capture({ url: 'https://x.test/ok', second: 0, time: 20 });
+  const slow = capture({ url: 'https://x.test/slow', second: 1, time: 1200 });
+  const notFound = capture({ url: 'https://x.test/404', second: 2, status: 404, time: 30 });
   const verySlow = capture({ url: 'https://x.test/very-slow', second: 3, time: 4000 });
-  const failed = capture({ url: 'https://x.test/failed', second: 2, status: 0 });
-  const gql = capture({ url: 'https://x.test/gql', second: 1, time: 40 });
-  const serverError = capture({ url: 'https://x.test/500', second: 0, status: 500, time: 10 });
+  const failed = capture({ url: 'https://x.test/failed', second: 4, status: 0 });
+  const gql = capture({ url: 'https://x.test/gql', second: 5, time: 40 });
+  const serverError = capture({ url: 'https://x.test/500', second: 6, status: 500, time: 10 });
   const requests = [ok, slow, notFound, verySlow, failed, gql, serverError];
   const errors: GraphqlErrors = new Map([[gql.id, ['Boom']]]);
 
-  it('keeps the newest-first order by default', () => {
-    expect(sortRequests(requests, 'newest', errors)).toEqual(requests);
+  it('keeps the time order by default', () => {
+    expect(sortRequests(requests, 'time', errors)).toEqual(requests);
   });
 
   it('puts the slowest first and unknown durations last', () => {

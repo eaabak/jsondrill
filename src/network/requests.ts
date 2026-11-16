@@ -155,7 +155,7 @@ export function isJsonMimeType(mimeType: string): boolean {
   return JSON_MIME_TYPE.test(getMimeEssence(mimeType));
 }
 
-/** Merges requests newest first. Incoming requests replace existing ones with the same id. */
+/** Merges requests oldest first, like the Network tab. Incoming requests replace existing ones with the same id. */
 export function mergeRequests(
   current: readonly CapturedRequest[],
   incoming: readonly CapturedRequest[],
@@ -163,7 +163,7 @@ export function mergeRequests(
 ): CapturedRequest[] {
   const byId = new Map(current.map((request) => [request.id, request]));
   for (const request of incoming) byId.set(request.id, request);
-  return [...byId.values()].toSorted((a, b) => b.startedAt - a.startedAt).slice(0, limit);
+  return [...byId.values()].toSorted((a, b) => a.startedAt - b.startedAt).slice(-limit);
 }
 
 export function filterRequests(

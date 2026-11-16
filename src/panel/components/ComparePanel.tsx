@@ -14,7 +14,8 @@ export function ComparePanel({ request, requests }: ComparePanelProps) {
   const [chosenId, setChosenId] = useState<string | null>(null);
   const selectId = useId();
   const { sameEndpoint, others } = useMemo(() => {
-    const candidates = requests.filter((candidate) => candidate.id !== request.id);
+    // Newest first, so the most recent calls lead the dropdown.
+    const candidates = requests.filter((candidate) => candidate.id !== request.id).toReversed();
     return {
       sameEndpoint: candidates.filter((candidate) => isSameEndpoint(candidate, request)),
       others: candidates.filter(
