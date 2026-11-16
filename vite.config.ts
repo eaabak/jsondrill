@@ -19,6 +19,7 @@ export default defineConfig({
         devtools: fromRoot('devtools.html'),
         panel: fromRoot('panel.html'),
         popup: fromRoot('popup.html'),
+        viewer: fromRoot('viewer.html'),
         background: fromRoot('src/background.ts'),
       },
       output: {
