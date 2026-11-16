@@ -128,4 +128,16 @@ describe('decodeJwt', () => {
     expect(findJwt(headers.slice(0, 2))?.source).toBe('x-id-token');
     expect(findJwt([{ name: 'authorization', value: 'Basic dXNlcjpwYXNz' }])).toBeNull();
   });
+
+  it('finds a token stored in a cookie, after the other headers', () => {
+    const cookie = { name: 'cookie', value: `theme=dark; token=${token}; XSRF-TOKEN=61b9e785` };
+    expect(findJwt([cookie])).toMatchObject({ source: 'cookie "token"', algorithm: 'HS256' });
+    expect(findJwt([cookie, { name: 'Authorization', value: `Bearer ${token}` }])?.source).toBe(
+      'Authorization',
+    );
+    expect(findJwt([{ name: 'Cookie', value: `auth="Bearer%20${token}"` }])?.source).toBe(
+      'cookie "auth"',
+    );
+    expect(findJwt([{ name: 'cookie', value: 'theme=dark; flag; sid=abc.def' }])).toBeNull();
+  });
 });

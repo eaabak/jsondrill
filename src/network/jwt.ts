@@ -1,7 +1,7 @@
 import type { NameValue } from './requests';
 
 export interface DecodedJwt {
-  /** Name of the header the token was found in. */
+  /** Where the token was found: a header name, or `cookie "name"` for a cookie. */
   source: string;
   algorithm: string | null;
   /** Milliseconds since the epoch, or null when the claim is absent. */
@@ -13,19 +13,42 @@ export interface DecodedJwt {
 
 const JWT_SHAPE = /^[\w-]+\.[\w-]+\.[\w-]*$/;
 const AUTH_SCHEME = /^(?:bearer|jwt|token)\s+/i;
+// Some servers put the whole header value in the cookie: `Bearer%20<token>`.
+const ENCODED_AUTH_SCHEME = /^(?:bearer|jwt|token)(?:%20|\+|\s)+/i;
+const COOKIE_QUOTES = /^"|"$/g;
 const MS_PER_SECOND = 1000;
 
 /**
- * Decodes the first JSON Web Token found in the request headers, `Authorization` first.
- * The signature is not verified; decoding only reads what the token already carries.
+ * Decodes the first JSON Web Token in the request headers: `Authorization` first, then the other
+ * headers, then the cookies. The signature is not verified.
  */
 export function findJwt(headers: readonly NameValue[]): DecodedJwt | null {
   const ordered = headers.toSorted(
     (a, b) => Number(isAuthorization(b.name)) - Number(isAuthorization(a.name)),
   );
   for (const { name, value } of ordered) {
-    if (name.toLowerCase() === 'cookie') continue;
+    if (isCookie(name)) continue;
     const decoded = decodeJwt(value.trim().replace(AUTH_SCHEME, ''), name);
+    if (decoded) return decoded;
+  }
+  for (const { name, value } of ordered) {
+    if (!isCookie(name)) continue;
+    const decoded = findJwtInCookies(value);
+    if (decoded) return decoded;
+  }
+  return null;
+}
+
+function findJwtInCookies(cookieHeader: string): DecodedJwt | null {
+  for (const pair of cookieHeader.split(';')) {
+    const separator = pair.indexOf('=');
+    if (separator === -1) continue;
+    const name = pair.slice(0, separator).trim();
+    const value = pair
+      .slice(separator + 1)
+      .trim()
+      .replace(COOKIE_QUOTES, '');
+    const decoded = decodeJwt(value.replace(ENCODED_AUTH_SCHEME, ''), `cookie "${name}"`);
     if (decoded) return decoded;
   }
   return null;
@@ -52,6 +75,10 @@ export function decodeJwt(token: string, source = ''): DecodedJwt | null {
 
 function isAuthorization(name: string): boolean {
   return name.toLowerCase() === 'authorization';
+}
+
+function isCookie(name: string): boolean {
+  return name.toLowerCase() === 'cookie';
 }
 
 function decodeSegment(segment: string): Record<string, unknown> | null {
