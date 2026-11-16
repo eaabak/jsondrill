@@ -4,7 +4,6 @@ import { fieldLabel } from '../format';
 import { SegmentedControl, type SegmentOption } from './SegmentedControl';
 
 interface SearchBarProps {
-  inputId: string;
   fields: readonly SchemaField[];
   field: SchemaField | null;
   text: string;
@@ -23,7 +22,6 @@ const MATCH_OPTIONS: readonly SegmentOption<SearchMode>[] = [
 ];
 
 export function SearchBar({
-  inputId,
   fields,
   field,
   text,
@@ -35,7 +33,7 @@ export function SearchBar({
   const selectedLabel = field ? fieldLabel(field) : 'Any field';
 
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-1">
+    <div className="flex min-w-0 flex-1 basis-72 flex-wrap items-center gap-1">
       <div className="flex min-w-0 flex-1 basis-72">
         <select
           className="jd-select relative w-48 max-w-[45%] shrink-0 rounded-r-none font-mono focus-visible:z-10"
@@ -60,10 +58,10 @@ export function SearchBar({
             aria-hidden
           />
           <input
-            id={inputId}
             type="search"
             className="jd-input relative w-full rounded-l-none pl-5 font-mono focus-visible:z-10"
-            placeholder={field ? `Search ${selectedLabel}` : 'Search all fields'}
+            aria-label="Search records"
+            placeholder={field ? `Search in ${selectedLabel}` : 'Search in all fields'}
             autoComplete="off"
             spellCheck={false}
             value={text}
@@ -71,12 +69,14 @@ export function SearchBar({
           />
         </div>
       </div>
-      <SegmentedControl
-        label="Match mode"
-        value={mode}
-        options={MATCH_OPTIONS}
-        onChange={onModeChange}
-      />
+      {(text !== '' || mode === 'exact') && (
+        <SegmentedControl
+          label="Match mode"
+          value={mode}
+          options={MATCH_OPTIONS}
+          onChange={onModeChange}
+        />
+      )}
     </div>
   );
 }

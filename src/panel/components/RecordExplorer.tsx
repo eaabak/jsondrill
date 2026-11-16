@@ -1,4 +1,5 @@
-import { useDeferredValue, useId, useMemo, useState, type ReactNode } from 'react';
+import { Plus } from 'lucide-react';
+import { useDeferredValue, useMemo, useState, type ReactNode } from 'react';
 import {
   filterRecords,
   inferSchema,
@@ -6,7 +7,6 @@ import {
   stringifyJson,
   type Collection,
 } from '../../core';
-import { formatCount } from '../format';
 import { useRecordQuery } from '../hooks/useRecordQuery';
 import { FilterBuilder } from './FilterBuilder';
 import { JsonTree } from './JsonTree';
@@ -40,8 +40,6 @@ export function RecordExplorer({
     () => new Set(isSingleRecord ? ['0'] : []),
   );
   const [revealId, setRevealId] = useState<string | null>(null);
-  const collectionId = useId();
-  const searchId = useId();
 
   const openRecord = (index: number) => {
     const id = String(index);
@@ -85,61 +83,49 @@ export function RecordExplorer({
     );
   }
 
-  const isSampled = schema.sampleSize < schema.recordCount;
-
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="grid max-h-[50%] shrink-0 grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-x-2 gap-y-1.5 overflow-auto border-b border-line px-2 py-2">
-        <label htmlFor={collectionId} className="text-muted">
-          Collection
-        </label>
-        <div className="flex min-w-0 items-center gap-2">
-          <select
-            id={collectionId}
-            className="jd-select max-w-64 min-w-0 font-mono"
-            value={collection.key}
-            onChange={(event) => onCollectionChange(event.target.value)}
-            disabled={collections.length < 2}
+      <div className="flex max-h-[50%] shrink-0 flex-col gap-1.5 overflow-auto border-b border-line px-2 py-1.5">
+        <div className="flex min-w-0 flex-wrap items-center gap-1">
+          {collections.length > 1 && (
+            <select
+              className="jd-select max-w-56 min-w-0 font-mono"
+              aria-label="List to show"
+              title="This response has several lists. Choose the one to show."
+              value={collection.key}
+              onChange={(event) => onCollectionChange(event.target.value)}
+            >
+              {collections.map((candidate) => (
+                <option key={candidate.key} value={candidate.key}>
+                  {candidate.label} ({candidate.size.toLocaleString('en-US')})
+                </option>
+              ))}
+            </select>
+          )}
+          <SearchBar
+            fields={recordQuery.searchFields}
+            field={recordQuery.searchField}
+            text={recordQuery.searchText}
+            mode={recordQuery.searchMode}
+            onFieldChange={recordQuery.setSearchFieldKey}
+            onTextChange={recordQuery.setSearchText}
+            onModeChange={recordQuery.setSearchMode}
+          />
+          <button
+            type="button"
+            className="jd-button"
+            onClick={recordQuery.addRow}
+            disabled={schema.fields.length === 0}
+            title="Keep only the records where a field matches a condition"
           >
-            {collections.map((candidate) => (
-              <option key={candidate.key} value={candidate.key}>
-                {candidate.label} ({candidate.size.toLocaleString('en-US')})
-              </option>
-            ))}
-          </select>
-          <span
-            className="min-w-0 truncate text-muted"
-            title={
-              isSampled
-                ? `Fields inferred from a sample of ${schema.sampleSize} records`
-                : undefined
-            }
-          >
-            {formatCount(schema.fields.length, 'field')}
-            {isSampled && ` · sampled ${schema.sampleSize.toLocaleString('en-US')}`}
-          </span>
+            <Plus size={12} aria-hidden />
+            Add filter
+          </button>
         </div>
-
-        <label htmlFor={searchId} className="text-muted">
-          Search
-        </label>
-        <SearchBar
-          inputId={searchId}
-          fields={recordQuery.searchFields}
-          field={recordQuery.searchField}
-          text={recordQuery.searchText}
-          mode={recordQuery.searchMode}
-          onFieldChange={recordQuery.setSearchFieldKey}
-          onTextChange={recordQuery.setSearchText}
-          onModeChange={recordQuery.setSearchMode}
-        />
-
-        <span className="self-start leading-6 text-muted">Filters</span>
         <FilterBuilder
           fields={schema.fields}
           sampleSize={schema.sampleSize}
           rows={recordQuery.rows}
-          onAdd={recordQuery.addRow}
           onChange={recordQuery.updateRow}
           onRemove={recordQuery.removeRow}
         />
@@ -147,6 +133,7 @@ export function RecordExplorer({
       <ResultToolbar
         matchCount={matches.length}
         totalCount={records.length}
+        source={collections.length === 1 && collection.path.length > 0 ? collection.label : ''}
         isFiltered={isQueryActive(deferredQuery)}
         canReset={recordQuery.hasInput}
         isPending={deferredQuery !== recordQuery.query}

@@ -70,7 +70,6 @@ export function CompareView({ before, after, beforeTime, afterTime }: CompareVie
       ),
     [diff, kind, field],
   );
-  const collectionId = useId();
   const fieldId = useId();
 
   const kindOptions: readonly SegmentOption<KindFilter>[] = [
@@ -86,36 +85,27 @@ export function CompareView({ before, after, beforeTime, afterTime }: CompareVie
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="grid shrink-0 grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-x-2 gap-y-1.5 border-b border-line px-2 py-2">
-        <label htmlFor={collectionId} className="text-muted">
-          Collection
-        </label>
-        <div className="flex min-w-0 items-center gap-2">
-          <select
-            id={collectionId}
-            className="jd-select max-w-64 min-w-0 font-mono"
-            value={collection.key}
-            onChange={(event) => {
-              setCollectionKey(event.target.value);
-              setKind('all');
-              setField('');
-            }}
-            disabled={collections.length < 2}
-          >
-            {collections.map((candidate) => (
-              <option key={candidate.key} value={candidate.key}>
-                {candidate.label}
-              </option>
-            ))}
-          </select>
-          <span className="min-w-0 truncate text-muted tabular-nums">
-            {beforeTime} → {afterTime} ·{' '}
-            {diff.match.kind === 'field' ? `matched by ${diff.match.field}` : 'matched by position'}
-          </span>
-        </div>
-
-        <span className="text-muted">Show</span>
+      <div className="shrink-0 border-b border-line px-2 py-1.5">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
+          {collections.length > 1 && (
+            <select
+              className="jd-select max-w-64 min-w-0 font-mono"
+              aria-label="List to compare"
+              title="These responses share several lists. Choose the one to compare."
+              value={collection.key}
+              onChange={(event) => {
+                setCollectionKey(event.target.value);
+                setKind('all');
+                setField('');
+              }}
+            >
+              {collections.map((candidate) => (
+                <option key={candidate.key} value={candidate.key}>
+                  {candidate.label}
+                </option>
+              ))}
+            </select>
+          )}
           <SegmentedControl
             label="Change type"
             value={kind}
@@ -148,8 +138,12 @@ export function CompareView({ before, after, beforeTime, afterTime }: CompareVie
               </select>
             </>
           )}
-          <span className="text-muted tabular-nums">
-            {formatCount(diff.counts.unchanged, 'unchanged record')}
+          <span
+            className="min-w-0 truncate text-muted tabular-nums"
+            title={`Comparing the response of ${beforeTime} with the one of ${afterTime}`}
+          >
+            {formatCount(diff.counts.unchanged, 'unchanged record')} ·{' '}
+            {matchField === null ? 'paired by position' : `paired by ${matchField}`}
           </span>
         </div>
       </div>
