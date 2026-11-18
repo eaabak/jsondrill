@@ -30,8 +30,13 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   width: 320px;
+  /* Chrome cuts popups off at 600px; only the updates list scrolls inside it. */
+  max-height: 600px;
   margin: 0;
+  overflow: hidden;
   background: var(--bg);
   color: var(--fg);
   font:
@@ -51,6 +56,7 @@ ol {
 
 .header {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 10px;
   padding: 14px 16px 12px;
@@ -67,6 +73,9 @@ h1 {
 }
 
 .updates {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
   padding: 12px 16px 14px;
 }
 
@@ -105,7 +114,8 @@ h1 {
 
 .notes {
   display: grid;
-  max-height: 420px;
+  min-height: 0;
+  flex: 1;
   margin: 0;
   padding: 0;
   overflow-y: auto;
@@ -166,6 +176,7 @@ h1 {
 
 .more {
   display: inline-block;
+  align-self: flex-start;
   margin-top: 10px;
   color: var(--accent);
   font-size: 12px;
@@ -258,6 +269,7 @@ kbd {
 
 .footer {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 14px;
   padding: 10px 16px;
