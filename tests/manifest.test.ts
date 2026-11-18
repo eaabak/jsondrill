@@ -15,9 +15,14 @@ describe('extension manifest', () => {
     expect(manifest.background).toEqual({ service_worker: 'background.js', type: 'module' });
   });
 
-  it('requests no permissions', () => {
+  it('requests no permissions at install', () => {
     expect(manifest).not.toHaveProperty('permissions');
     expect(manifest).not.toHaveProperty('host_permissions');
     expect(manifest).not.toHaveProperty('content_scripts');
+  });
+
+  it('asks for site access only when the user turns on recording', () => {
+    expect(manifest.optional_permissions).toEqual(['scripting']);
+    expect(manifest.optional_host_permissions).toEqual(['https://*/*', 'http://*/*']);
   });
 });

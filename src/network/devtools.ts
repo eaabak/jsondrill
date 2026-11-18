@@ -1,4 +1,12 @@
-import { createCapturedRequest, type CapturedRequest, type NetworkSource } from './requests';
+import { getRecordingPattern } from '../recording';
+import { parseRecordedEntries, READ_RECORDED_EXPRESSION } from './recorded';
+import {
+  createCapturedRequest,
+  type CapturedRequest,
+  type NetworkSource,
+  type RecordingControl,
+  type RecordingState,
+} from './requests';
 
 type DevtoolsRequest = chrome.devtools.network.Request;
 
@@ -28,6 +36,8 @@ export function createDevtoolsNetworkSource(): NetworkSource {
           resolve(log.entries.map(toCapturedRequest));
         });
       }),
+    getRecordedRequests: () => evaluate(READ_RECORDED_EXPRESSION).then(parseRecordedEntries),
+    recording: createRecordingControl(),
     onRequest(listener) {
       const handleRequest = (request: DevtoolsRequest) => listener(toCapturedRequest(request));
       network.onRequestFinished.addListener(handleRequest);
@@ -40,6 +50,41 @@ export function createDevtoolsNetworkSource(): NetworkSource {
     },
     reloadPage: () => inspectedWindow.reload(),
   };
+}
+
+function createRecordingControl(): RecordingControl {
+  const { permissions } = chrome;
+  return {
+    async getState(): Promise<RecordingState> {
+      // Older Chrome builds may not expose site access to DevTools pages.
+      if (typeof permissions?.request !== 'function') return { kind: 'unavailable' };
+      const pattern = getRecordingPattern(await getInspectedUrl());
+      if (pattern === null) return { kind: 'unavailable' };
+      const granted = await permissions.contains({
+        permissions: ['scripting'],
+        origins: [pattern],
+      });
+      return { kind: granted ? 'on' : 'off', pattern };
+    },
+    start: (pattern) => permissions.request({ permissions: ['scripting'], origins: [pattern] }),
+    stop: async (pattern) => {
+      await permissions.remove({ origins: [pattern] });
+    },
+  };
+}
+
+async function getInspectedUrl(): Promise<string> {
+  const url = await evaluate('location.href');
+  return typeof url === 'string' ? url : '';
+}
+
+/** Runs an expression in the inspected page; resolves to undefined if it throws. */
+function evaluate(expression: string): Promise<unknown> {
+  return new Promise((resolve) => {
+    chrome.devtools.inspectedWindow.eval(expression, (result: unknown, exception: unknown) => {
+      resolve(exception ? undefined : result);
+    });
+  });
 }
 
 function toCapturedRequest(entry: HARFormatEntry): CapturedRequest {

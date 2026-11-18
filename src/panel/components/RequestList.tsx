@@ -1,4 +1,4 @@
-import { Ban, Info, RotateCw, Search, TriangleAlert } from 'lucide-react';
+import { Ban, Circle, Info, RotateCw, Search, TriangleAlert } from 'lucide-react';
 import {
   useId,
   useLayoutEffect,
@@ -21,7 +21,10 @@ import {
   isFailedStatus,
   type CapturedRequest,
   type GraphqlErrors,
+  type RecordingState,
 } from '../../network/requests';
+import { getPatternSite } from '../../recording';
+import { RecordingPanel } from './RecordingPanel';
 import { speedClass } from '../format';
 import type { CaptureStatus } from '../hooks/useRequestCapture';
 import { RepeatBadge, RequestLegend } from './RequestLegend';
@@ -45,6 +48,9 @@ interface RequestListProps {
   onSelect: (request: CapturedRequest) => void;
   onClear: () => void;
   onReload: () => void;
+  recording: RecordingState;
+  onStartRecording: () => void;
+  onStopRecording: () => void;
 }
 
 export function RequestList({
@@ -57,12 +63,16 @@ export function RequestList({
   onSelect,
   onClear,
   onReload,
+  recording,
+  onStartRecording,
+  onStopRecording,
 }: RequestListProps) {
   const [text, setText] = useState('');
   const [jsonOnly, setJsonOnly] = useState(true);
   const [errorsOnly, setErrorsOnly] = useState(false);
   const [order, setOrder] = useState<RequestOrder>('time');
-  const [showLegend, setShowLegend] = useState(false);
+  const [openInfo, setOpenInfo] = useState<'legend' | 'recording' | null>(null);
+  const toggleInfo = (info: 'legend' | 'recording') => setOpenInfo(openInfo === info ? null : info);
   const visible = useMemo(
     () =>
       sortRequests(
@@ -85,6 +95,7 @@ export function RequestList({
   });
   const listId = useId();
   const legendId = useId();
+  const recordingId = useId();
   const optionId = (index: number) => `${listId}-option-${index}`;
   const selectedIndex = visible.findIndex((request) => request.id === selectedId);
 
@@ -115,6 +126,8 @@ export function RequestList({
       <StatusMessage action={reloadButton}>
         No requests captured yet. JSONDrill sees requests made while DevTools is open; reload the
         page to capture earlier ones.
+        {recording.kind === 'off' &&
+          ' To keep them even when DevTools is closed, turn on Record when closed below.'}
       </StatusMessage>
     );
   } else if (visible.length === 0) {
@@ -275,17 +288,47 @@ export function RequestList({
       >
         {content}
       </div>
-      {showLegend && <RequestLegend id={legendId} />}
-      <div className="flex h-6 shrink-0 items-center justify-between border-t border-line bg-surface-alt px-1.5 text-muted tabular-nums">
-        <span>
+      {openInfo === 'legend' && <RequestLegend id={legendId} />}
+      {openInfo === 'recording' && recording.kind !== 'unavailable' && (
+        <RecordingPanel
+          id={recordingId}
+          site={getPatternSite(recording.pattern)}
+          isOn={recording.kind === 'on'}
+          onStart={onStartRecording}
+          onStop={onStopRecording}
+          onClose={() => setOpenInfo(null)}
+        />
+      )}
+      <div className="flex h-6 shrink-0 items-center justify-between gap-2 border-t border-line bg-surface-alt px-1.5 text-muted tabular-nums">
+        <span className="shrink-0">
           {visible.length} / {requests.length} requests
         </span>
+        {recording.kind !== 'unavailable' && (
+          <button
+            type="button"
+            className={`flex min-w-0 items-center gap-1 hover:text-fg ${
+              recording.kind === 'on' ? 'text-fg' : ''
+            }`}
+            aria-expanded={openInfo === 'recording'}
+            aria-controls={recordingId}
+            onClick={() => toggleInfo('recording')}
+          >
+            <Circle
+              size={9}
+              aria-hidden
+              className={`shrink-0 ${recording.kind === 'on' ? 'fill-error text-error' : ''}`}
+            />
+            <span className="truncate">
+              {recording.kind === 'on' ? 'Recording this site' : 'Record when closed'}
+            </span>
+          </button>
+        )}
         <button
           type="button"
           className="flex items-center gap-1 hover:text-fg"
-          aria-expanded={showLegend}
+          aria-expanded={openInfo === 'legend'}
           aria-controls={legendId}
-          onClick={() => setShowLegend(!showLegend)}
+          onClick={() => toggleInfo('legend')}
         >
           <Info size={12} aria-hidden />
           Colors

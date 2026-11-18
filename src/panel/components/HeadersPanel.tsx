@@ -74,7 +74,17 @@ export function HeadersPanel({ request, requests, graphqlErrors }: HeadersPanelP
     { title: 'Request headers', rows: request.requestHeaders, mask: true },
   );
 
-  return <NameValueTable sections={sections} />;
+  return (
+    <>
+      {request.recordedInPage && (
+        <p className="m-0 shrink-0 border-b border-line bg-surface-alt px-2 py-1 text-muted">
+          Recorded while DevTools was closed. Headers the browser adds itself, such as cookies, and
+          the timing breakdown are not available.
+        </p>
+      )}
+      <NameValueTable sections={sections} />
+    </>
+  );
 }
 
 function getTimingRows({ duration, timings }: CapturedRequest): NameValueRow[] {

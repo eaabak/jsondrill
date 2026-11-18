@@ -6,6 +6,7 @@ import { Splitter } from './components/Splitter';
 import { StatusMessage } from './components/StatusMessage';
 import { useGraphqlErrors } from './hooks/useGraphqlErrors';
 import { useMediaQuery } from './hooks/useMediaQuery';
+import { useRecording } from './hooks/useRecording';
 import { useRequestCapture } from './hooks/useRequestCapture';
 import { useStoredSize } from './hooks/useStoredSize';
 
@@ -19,6 +20,7 @@ const MIN_DETAILS_HEIGHT = 160;
 export function App({ network }: { network: NetworkSource }) {
   const { requests, selected, select, clear, status } = useRequestCapture(network);
   const graphqlErrors = useGraphqlErrors(requests);
+  const recording = useRecording(network);
   const [tab, setTab] = useState<DetailTab>('response');
   const isSideBySide = useMediaQuery(SIDE_BY_SIDE);
   const [listWidth, setListWidth] = useStoredSize('jsondrill.requestListWidth');
@@ -47,6 +49,9 @@ export function App({ network }: { network: NetworkSource }) {
         onSelect={select}
         onClear={clear}
         onReload={() => network.reloadPage()}
+        recording={recording.state}
+        onStartRecording={recording.start}
+        onStopRecording={recording.stop}
       />
       <Splitter
         orientation={isSideBySide ? 'vertical' : 'horizontal'}

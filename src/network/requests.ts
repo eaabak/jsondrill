@@ -33,6 +33,8 @@ export interface CapturedRequest {
   responseHeaders: readonly NameValue[];
   queryParams: readonly NameValue[];
   payload: RequestPayload | null;
+  /** Recorded by JSONDrill in the page while DevTools was closed, with fewer details. */
+  recordedInPage: boolean;
   readBody: () => Promise<string>;
 }
 
@@ -73,8 +75,21 @@ interface HarPostData {
   params?: readonly { name: string; value?: string; fileName?: string }[];
 }
 
+export type RecordingState = { kind: 'unavailable' } | { kind: 'off' | 'on'; pattern: string };
+
+/** Recording requests of the inspected site while DevTools is closed. */
+export interface RecordingControl {
+  getState(): Promise<RecordingState>;
+  /** Call it straight from a click: Chrome only asks for site access during a user gesture. */
+  start(pattern: string): Promise<boolean>;
+  stop(pattern: string): Promise<void>;
+}
+
 export interface NetworkSource {
   getRequests(): Promise<CapturedRequest[]>;
+  /** Requests JSONDrill recorded in the page before DevTools opened. Never rejects. */
+  getRecordedRequests(): Promise<CapturedRequest[]>;
+  recording: RecordingControl;
   onRequest(listener: (request: CapturedRequest) => void): () => void;
   onNavigated(listener: () => void): () => void;
   reloadPage(): void;
@@ -128,6 +143,7 @@ export function createCapturedRequest(
     responseHeaders: toNameValues(entry.response.headers).toSorted(compareNames),
     queryParams,
     payload,
+    recordedInPage: false,
     readBody,
   };
 }

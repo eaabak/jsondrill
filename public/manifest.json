@@ -10,6 +10,8 @@
     "service_worker": "background.js",
     "type": "module"
   },
+  "optional_permissions": ["scripting"],
+  "optional_host_permissions": ["https://*/*", "http://*/*"],
   "homepage_url": "https://github.com/eaabak/jsondrill",
   "action": {
     "default_title": "JSONDrill: open DevTools to use",

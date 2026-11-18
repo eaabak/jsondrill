@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { dropLoggedRequests } from '../../network/recorded';
 import { mergeRequests, type CapturedRequest, type NetworkSource } from '../../network/requests';
 import { getErrorMessage } from '../format';
 
@@ -23,11 +24,14 @@ export function useRequestCapture(network: NetworkSource) {
     });
     const stopNavigation = network.onNavigated(clear);
 
-    network.getRequests().then(
-      (initial) => {
+    Promise.all([network.getRequests(), network.getRecordedRequests()]).then(
+      ([initial, recorded]) => {
         if (!active) return;
-        // Live events are fresher than the HAR snapshot, so they win on duplicates.
-        setRequests((current) => mergeRequests(initial, current));
+        setRequests((current) => {
+          // Live events are fresher than the HAR snapshot, so they win on duplicates.
+          const logged = mergeRequests(initial, current);
+          return mergeRequests(logged, dropLoggedRequests(recorded, logged));
+        });
         setStatus({ kind: 'ready' });
       },
       (error: unknown) => {
