@@ -6,6 +6,13 @@ All notable changes to JSONDrill are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Record when closed, under the request list: allow the current site once and JSONDrill keeps
+  its `fetch` and XHR requests even while DevTools is closed, so they are in the list when you
+  open it. Before anything starts, a short note explains that nothing is sent anywhere or saved
+  to disk. Chrome asks for access to that one site only; nothing is asked at install.
+
 ## [0.4.0] - 2026-11-16
 
 ### Changed

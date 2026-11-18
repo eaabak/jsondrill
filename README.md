@@ -31,6 +31,8 @@ without browsing thousands of nested objects or writing JSONPath.
   (`Authorization`, cookies, tokens, passwords) stay masked until you reveal them
 - Headers tab also shows a timing breakdown (waiting for the server vs downloading), a summary of
   all calls to the same endpoint, and the decoded JWT of the `Authorization` header or a cookie with its expiry
+- **Record when closed**: allow one site and JSONDrill keeps that site's `fetch` and XHR
+  requests even while DevTools is closed, so they are there when you open it
 - **Open a JSON file or paste JSON** from the toolbar popup to explore it in a tab, no DevTools
   needed
 - **Copy as** a bug report for Jira or GitHub, a cURL command or a `fetch()` call, with tokens,
@@ -96,7 +98,8 @@ npm run build
 
 ## Privacy
 
-JSONDrill runs entirely locally. It requests no extension permissions, makes no network
+JSONDrill runs entirely locally. It requests no extension permissions at install (site access is
+asked for only if you turn on recording for a site), makes no network
 requests of its own (opening DevTools only asks the browser to check for a JSONDrill update),
 collects no analytics and stores no request or response data on disk (it only remembers
 the size of the request list). Request details come from the

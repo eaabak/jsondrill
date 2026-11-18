@@ -42,6 +42,9 @@ The request list keeps the order of the Network tab and shows how long each requ
 PAYLOAD AND HEADERS
 Switch between the Response, Payload and Headers tabs of any request. JSON request bodies get the same search, filters and table as responses, so even a bulk POST with hundreds of items is easy to inspect. Form data and query parameters are shown as tables. The Headers tab shows where the time went and decodes a JWT from the Authorization header or a cookie, with its expiry. Authorization headers, cookies, tokens and passwords stay masked until you reveal them.
 
+RECORD WHEN CLOSED
+Missed a request because DevTools was closed? Click Record when closed once and allow the site. From then on JSONDrill keeps that site's fetch and XHR requests in the page, and they are in the list as soon as you open DevTools.
+
 COPY AS BUG REPORT, CURL OR FETCH
 Turn any request into a ready-to-paste bug report for Jira or GitHub, a cURL command or a fetch() call. Tokens, cookies and passwords are hidden unless you choose to include them.
 
@@ -52,7 +55,7 @@ COPY AND EXPORT
 Copy the matching records as JSON or download them as a file.
 
 PRIVATE BY DESIGN
-JSONDrill runs entirely on your computer. It requests no permissions, makes no network requests, has no analytics or tracking, and never stores response data or opened files on disk.
+JSONDrill runs entirely on your computer. It asks for no permissions at install; site access is requested only for a site you choose to record. It makes no network requests, has no analytics or tracking, and never stores response data or opened files on disk.
 
 HOW TO USE
 1. Open DevTools and select the JSONDrill panel.
@@ -91,15 +94,29 @@ show synthetic sample data.
 JSONDrill helps developers inspect, search and filter JSON: the responses of network requests inside a Chrome DevTools panel, and JSON files or text they open themselves.
 ```
 
-**Permission justification:** none needed. The manifest requests no permissions and no host
-permissions; the DevTools APIs it uses are available to every `devtools_page`.
+**Permission justification:** nothing is requested at install. Two optional permissions are
+requested at runtime, only when the user clicks Record when closed, and only for the site open in
+DevTools:
+
+- `scripting` (optional):
+
+  ```text
+  Used only after the user turns on "Record when closed" for a site. It registers a script for that site so the requests the page makes while DevTools is closed are kept in the page and shown in the JSONDrill panel when DevTools is opened. Nothing is sent anywhere.
+  ```
+
+- Host permissions (optional, `https://*/*` and `http://*/*`):
+
+  ```text
+  Requested one site at a time, only for the site the user chooses to record. Needed so the recording script can run on that site. The user can stop recording or remove the access at any time.
+  ```
 
 **Remote code:** No, I am not using remote code. All scripts are bundled in the package.
 
 **Data usage:** leave every data category unchecked. Request and response data (including
 headers and request bodies) is read through the DevTools API, processed in memory on the user's
 device and never transmitted, sold or stored. The same holds for a JSON file or text the user
-opens in the viewer page.
+opens in the viewer page, and for requests recorded while DevTools is closed, which stay in the
+recorded page's memory until DevTools reads them.
 
 Certify all three statements:
 

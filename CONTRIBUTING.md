@@ -39,8 +39,8 @@ automatically.
 
 - Add or update tests for any behaviour change in `src/core` or `src/network`.
 - Keep the TypeScript configuration strict; do not use `any` or suppress errors.
-- Do not add extension permissions, remote requests, telemetry or persistent storage of
-  response data.
+- Do not add install-time extension permissions, remote requests, telemetry or persistent
+  storage of response data. Site access stays optional and per site.
 - Render response content as text only; never use `dangerouslySetInnerHTML` or `eval`.
 - Prefer small, explicit changes over new abstractions or dependencies.
 - Follow the existing UI conventions: compact controls, square corners, design tokens in

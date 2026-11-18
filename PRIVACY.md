@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 16 November 2026_
+_Last updated: 17 November 2026_
 
 JSONDrill is a Chrome DevTools extension that helps developers inspect JSON responses. It is
 designed to work entirely on your computer.
@@ -34,7 +34,21 @@ navigates, or when DevTools is closed.
 - It contains no analytics, telemetry, advertising or tracking.
 - It does not store request or response data on disk. The only things it remembers are the size
   of the request list and whether Copy as hides credentials, kept in the extension's local storage.
-- It requests no extension permissions.
+- It requests no extension permissions at install. Site access is asked for only when you turn
+  on recording for a site (see below).
+
+## Recording while DevTools is closed
+
+Recording is off until you click Record when closed in the JSONDrill panel, read what it does and
+click Start recording. Chrome then asks you to allow JSONDrill to access that one site. From the next page load on, a small script in that
+site's pages notes the `fetch` and `XMLHttpRequest` calls the page makes: method, URL, status,
+duration, the headers the page sets itself, the request body, the response headers and JSON
+response bodies up to 5 MB. Other response bodies are not kept.
+
+These notes stay inside the page, in memory, limited to the 300 most recent requests. They are
+read only by the JSONDrill panel when you open DevTools on that page, and they disappear when the
+page is closed or reloaded. Nothing is written to disk or sent anywhere. Click Recording this site and
+then Stop recording to stop, or remove the site access in Chrome's extension settings.
 
 ## Opening a JSON file
 
