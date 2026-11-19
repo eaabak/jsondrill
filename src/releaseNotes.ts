@@ -12,6 +12,21 @@ export interface ReleaseNote {
 // Shown in the popup, newest first. Each release needs an entry; CHANGELOG.md has the full list.
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    version: '0.5.0',
+    date: '2026-11-18',
+    tags: ['feature'],
+    title: 'Requests are kept while DevTools is closed',
+    description:
+      'Click Record when closed under the request list and allow the site once. Its requests are then in the list as soon as you open DevTools. Nothing is sent anywhere or saved to disk.',
+  },
+  {
+    version: '0.5.0',
+    date: '2026-11-18',
+    tags: ['fix'],
+    title: 'One scroll bar in this popup',
+    description: 'The list of updates scrolls on its own and the popup no longer scrolls with it.',
+  },
+  {
     version: '0.4.0',
     date: '2026-11-16',
     tags: ['feature'],

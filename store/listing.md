@@ -43,7 +43,7 @@ PAYLOAD AND HEADERS
 Switch between the Response, Payload and Headers tabs of any request. JSON request bodies get the same search, filters and table as responses, so even a bulk POST with hundreds of items is easy to inspect. Form data and query parameters are shown as tables. The Headers tab shows where the time went and decodes a JWT from the Authorization header or a cookie, with its expiry. Authorization headers, cookies, tokens and passwords stay masked until you reveal them.
 
 RECORD WHEN CLOSED
-Missed a request because DevTools was closed? Click Record when closed once and allow the site. From then on JSONDrill keeps that site's fetch and XHR requests in the page, and they are in the list as soon as you open DevTools.
+Missed a request because DevTools was closed? Click Record when closed once and allow the site. From then on JSONDrill keeps that site's fetch and XHR requests in the page, and they are in the list as soon as you open DevTools. The requests stay in the open page only: nothing is sent anywhere or saved to disk, and they are cleared when you close or reload the page.
 
 COPY AS BUG REPORT, CURL OR FETCH
 Turn any request into a ready-to-paste bug report for Jira or GitHub, a cURL command or a fetch() call. Tokens, cookies and passwords are hidden unless you choose to include them.
@@ -91,7 +91,7 @@ show synthetic sample data.
 **Single purpose:**
 
 ```text
-JSONDrill helps developers inspect, search and filter JSON: the responses of network requests inside a Chrome DevTools panel, and JSON files or text they open themselves.
+JSONDrill helps developers inspect, search and filter JSON: the responses of network requests in a Chrome DevTools panel, including requests it records for a site the user chooses while DevTools is closed, and JSON files or text the user opens.
 ```
 
 **Permission justification:** nothing is requested at install. Two optional permissions are

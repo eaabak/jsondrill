@@ -6,12 +6,19 @@ All notable changes to JSONDrill are documented in this file. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-18
+
 ### Added
 
 - Record when closed, under the request list: allow the current site once and JSONDrill keeps
   its `fetch` and XHR requests even while DevTools is closed, so they are in the list when you
   open it. Before anything starts, a short note explains that nothing is sent anywhere or saved
   to disk. Chrome asks for access to that one site only; nothing is asked at install.
+
+### Fixed
+
+- The toolbar popup showed two scroll bars when the list of updates was long. Only the list
+  scrolls now.
 
 ## [0.4.0] - 2026-11-16
 
@@ -130,7 +137,8 @@ All notable changes to JSONDrill are documented in this file. The format follows
 - Virtualized table view, lazily expanded JSON tree, and copy or download of matching records.
 - Light and dark themes following the DevTools setting.
 
-[Unreleased]: https://github.com/eaabak/jsondrill/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/eaabak/jsondrill/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/eaabak/jsondrill/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/eaabak/jsondrill/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/eaabak/jsondrill/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/eaabak/jsondrill/compare/v0.2.0...v0.2.1
